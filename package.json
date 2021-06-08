@@ -1,0 +1,27 @@
+{
+  "name": "js-sdk-changelog-tool",
+  "version": "0.1.0",
+  "description": "",
+  "main": "dist/main.js",
+  "scripts": {
+    "start": "node dist/main.js",
+    "debug": "node --inspect-brk dist/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "js-sdk-changlog-tool": "./dist/main.js"
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "dependencies": {
+    "@azure-tools/openapi-tools-common": "^1.2.2",
+    "@ts-common/azure-js-dev-tools": "^22.4.22",
+    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.10",
+    "log": "^6.0.0",
+    "semver": "^7.3.5",
+    "shelljs": "^0.8.4",
+    "tslib": "^1.9.3",
+    "typescript": "^3.9.7"
+  }
+}
