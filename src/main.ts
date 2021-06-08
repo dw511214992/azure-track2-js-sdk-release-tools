@@ -27,15 +27,15 @@ function getNewestVersion(npmViewResult: NPMViewResult) {
     const versionLatest = distTags && distTags['latest'];
     const versionBeta = distTags && distTags['beta'];
     if (versionLatest && versionBeta) {
-        if (versionBeta) return versionLatest;
-        else return versionBeta;
-    } else {
         const semver = require('semver');
         if (semver.gt(versionLatest, versionBeta)) {
             return versionLatest;
         } else {
             return versionBeta;
         }
+    } else {
+        if (versionBeta) return versionBeta;
+        else return versionLatest;
     }
 }
 

@@ -13,7 +13,7 @@ example:
 js-sdk-changelog-tool sdk/compute/arm-compute
 ```
 
-##Overview
+## Overview
 In order to compute this changelog, we do the following steps:
 1. Input the package path.
 2. Get the package name and download the latest release from NPM.
