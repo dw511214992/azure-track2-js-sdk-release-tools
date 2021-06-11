@@ -11,5 +11,7 @@ export * from './declarations';
 export * from './exports';
 export * from './imports';
 export * from './resources';
+export * from './automaticGenerateChangeLogAndBumpVersion';
+export * from './ChangelogGenerator'
 
 export * from './type-guards/TypescriptHeroGuards';

@@ -895,7 +895,7 @@ const findRemovedEnumValue = (metaDataOld: TSExportedMetaData, metaDataNew: TSEx
     return removedEnumValue;
 };
 
-export const generateChangelog = (metaDataOld: TSExportedMetaData, metadataNew: TSExportedMetaData): Changelog => {
+export const changelogGenerator = (metaDataOld: TSExportedMetaData, metadataNew: TSExportedMetaData): Changelog => {
     const changLog = new Changelog();
 
     // features
