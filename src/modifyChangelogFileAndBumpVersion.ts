@@ -12,9 +12,7 @@ export function makeChangesForFirstRelease(packageFolderPath: string) {
 
   - Initial Release
 `;
-    fs.writeFile(path.join(packageFolderPath, 'CHANGELOG.md'), content, 'utf8', function (err) {
-        if (err) return console.log(err);
-    });
+    fs.writeFileSync(path.join(packageFolderPath, 'CHANGELOG.md'), content, 'utf8');
     changePackageJSON(packageFolderPath, '0.1.0');
     changeContextFile(packageFolderPath, '0.1.0')
 }
@@ -39,46 +37,26 @@ This version uses a next-generation code generator that introduces important bre
 - Operations with prefix \`begin\` like \`beginXXX\` that used to return a \`Promise<Models.XXX>\` now returns a \`LROPoller\`, and if you want to get previous result, please use operation name with prefix \`begin\` and suffix \`AndWait\`, such as \`beginXXXAndWait\`.
 - Operation \`list\` used to return \`Promise<Models.XXX>\` now returns a iterable result: \`PagedAsyncIterableIterator\`.
 `;
-    fs.writeFile(path.join(packageFolderPath, 'CHANGELOG.md'), content, 'utf8', function (err) {
-        if (err) return console.log(err);
-    });
+    fs.writeFileSync(path.join(packageFolderPath, 'CHANGELOG.md'), content, 'utf8');
     changePackageJSON(packageFolderPath, '30.0.0');
     changeContextFile(packageFolderPath, '30.0.0')
 }
 
 function changePackageJSON(packageFolderPath: string, packageVersion: string) {
-    fs.readFile(path.join(packageFolderPath, 'package.json'), 'utf8', function (err,data) {
-        if (err) {
-            return console.log(err);
-        }
-        const result = data.replace(/"version": "[0-9.a-z-]+"/g, '"version": "' + packageVersion + '"');
-
-        fs.writeFile(path.join(packageFolderPath, 'package.json'), result, 'utf8', function (err) {
-            if (err) return console.log(err);
-        });
-    });
+    const data: string = fs.readFileSync(path.join(packageFolderPath, 'package.json'), 'utf8');
+    const result = data.replace(/"version": "[0-9.a-z-]+"/g, '"version": "' + packageVersion + '"');
+    fs.writeFileSync(path.join(packageFolderPath, 'package.json'), result, 'utf8');
 }
 
 function changeContextFile(packageFolderPath: string, packageVersion: string) {
-    fs.readdir(path.join(packageFolderPath, 'src'), (err, files) => {
-        if (err) {
-            return console.log(err);
+    const files: string[] = fs.readdirSync(path.join(packageFolderPath, 'src'));
+    files.forEach(file => {
+        if (file.endsWith('Context.ts')) {
+            const data: string = fs.readFileSync(path.join(packageFolderPath, 'src', file), 'utf8');
+            const result = data.replace(/const packageVersion = "[0-9.a-z-]+"/g, 'const packageVersion = "' + packageVersion + '"');
+            fs.writeFileSync(path.join(packageFolderPath, 'src', file), result, 'utf8');
         }
-        files.forEach(file => {
-            if (file.endsWith('Context.ts')) {
-                fs.readFile(path.join(packageFolderPath, 'src', file), 'utf8', function (err,data) {
-                    if (err) {
-                        return console.log(err);
-                    }
-                    const result = data.replace(/const packageVersion = "[0-9.a-z-]+"/g, 'const packageVersion = "' + packageVersion + '"');
-
-                    fs.writeFile(path.join(packageFolderPath, 'src', file), result, 'utf8', function (err) {
-                        if (err) return console.log(err);
-                    });
-                });
-            }
-        })
-    });
+    })
 }
 
 export function makeChangesForTrack2ToTrack2(packageFolderPath: string, packageVersion: string, changeLog: Changelog) {
@@ -97,8 +75,12 @@ ${originalChangeLogContent}`;
 
 export function bumpMajorVersion(version: string) {
     const vArr = version.split('.');
-    vArr[0] = String(parseInt(vArr[0]) + 1);
-    vArr[1] = '0';
+    if (vArr[0] == '0') {
+        vArr[1] = String(parseInt(vArr[1]) + 1);
+    } else {
+        vArr[0] = String(parseInt(vArr[0]) + 1);
+        vArr[1] = '0';
+    }
     vArr[2] = '0';
     return vArr.join('.');
 }
