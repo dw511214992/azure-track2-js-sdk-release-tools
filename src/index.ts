@@ -1,17 +1,17 @@
-export * from './TypescriptParser';
-export * from './Node';
-export * from './SymbolSpecifier';
+export * from './changelog-generator/TypescriptParser';
+export * from './changelog-generator/Node';
+export * from './changelog-generator/SymbolSpecifier';
 
-export * from './DeclarationIndex';
+export * from './changelog-generator/DeclarationIndex';
 
-export * from './code-generators/TypescriptGenerationOptions';
-export * from './code-generators/TypescriptCodeGenerator';
+export * from './changelog-generator/code-generators/TypescriptGenerationOptions';
+export * from './changelog-generator/code-generators/TypescriptCodeGenerator';
 
-export * from './declarations';
-export * from './exports';
-export * from './imports';
-export * from './resources';
-export * from './automaticGenerateChangeLogAndBumpVersion';
-export * from './ChangelogGenerator'
+export * from './changelog-generator/declarations';
+export * from './changelog-generator/exports';
+export * from './changelog-generator/imports';
+export * from './changelog-generator/resources';
+export * from './changelog-generator/automaticGenerateChangeLogAndBumpVersion';
+export * from './changelog-generator/ChangelogGenerator'
 
-export * from './type-guards/TypescriptHeroGuards';
+export * from './changelog-generator/type-guards/TypescriptHeroGuards';

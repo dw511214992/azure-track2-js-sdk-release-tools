@@ -2,7 +2,7 @@
 
 import {generateChangelogAndBumpVersion} from "./automaticGenerateChangeLogAndBumpVersion";
 
-const main = async (packageFolderPath: string | undefined) => {
+const generateChangelogAndBumpVersionCLI = async (packageFolderPath: string | undefined) => {
     if (!packageFolderPath) {
         console.log(`invalid package path`);
     } else {
@@ -12,4 +12,4 @@ const main = async (packageFolderPath: string | undefined) => {
 
 const packageFolderPath = process.argv.pop();
 
-main(packageFolderPath);
+generateChangelogAndBumpVersionCLI(packageFolderPath);

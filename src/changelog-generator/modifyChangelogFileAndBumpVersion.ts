@@ -1,28 +1,21 @@
 import {Changelog} from "./ChangelogGenerator";
+import {logger} from "../logger";
 
 const fs = require('fs');
 const path = require('path');
 export function makeChangesForFirstRelease(packageFolderPath: string) {
-    // fs.copyFile('D:\\projects\\changlog-tool-for-track2-js-sdk\\change-log-templates\\first.release.changelog.md', path.join(packageFolderPath, 'CHANGELOG.md'), (err) => {
-    //     if (err) throw err;
-    //     console.log('CHANGELOG.md was copied to destination');
-    // });
 
-    const content = `## 0.1.0
+    const content = `## 0.1.0-beta.1 (Unreleased)
 
   - Initial Release
 `;
     fs.writeFileSync(path.join(packageFolderPath, 'CHANGELOG.md'), content, 'utf8');
-    changePackageJSON(packageFolderPath, '0.1.0');
-    changeContextFile(packageFolderPath, '0.1.0')
+    changePackageJSON(packageFolderPath, '0.1.0-beta.1');
+    changeContextFile(packageFolderPath, '0.1.0-beta.1')
 }
 
 export function makeChangesForMigrateTrack1ToTrack2(packageFolderPath: string) {
-    // fs.copyFile('D:\\projects\\changlog-tool-for-track2-js-sdk\\change-log-templates\\track1-to-track2.changelog.md', path.join(packageFolderPath, 'CHANGELOG.md'), (err) => {
-    //     if (err) throw err;
-    //     console.log('CHANGELOG.md was copied to destination');
-    // });
-    const content = `## 30.0.0
+    const content = `## 30.0.0-beta.1 (Unreleased)
 
 This is beta preview version.
 
@@ -35,11 +28,13 @@ This version uses a next-generation code generator that introduces important bre
   - Package \`@azure/ms-rest-nodeauth\` or \`@azure/ms-rest-browserauth\` are no longer supported, use package \`@azure/identity\` instead: https://github.com/Azure/azure-sdk-for-js/tree/master/sdk/identity/identity
 
 - Operations with prefix \`begin\` like \`beginXXX\` that used to return a \`Promise<Models.XXX>\` now returns a \`LROPoller\`, and if you want to get previous result, please use operation name with prefix \`begin\` and suffix \`AndWait\`, such as \`beginXXXAndWait\`.
-- Operation \`list\` used to return \`Promise<Models.XXX>\` now returns a iterable result: \`PagedAsyncIterableIterator\`.
+- Operation \`list\` used to return \`Promise<Models.XXX>\` now returns an iterable result: \`PagedAsyncIterableIterator\`.
+- The sdk is based on ES6.
+- Only LTS version of Node.js is supported, and you will get a warning if you are using old Node.js version.
 `;
     fs.writeFileSync(path.join(packageFolderPath, 'CHANGELOG.md'), content, 'utf8');
-    changePackageJSON(packageFolderPath, '30.0.0');
-    changeContextFile(packageFolderPath, '30.0.0')
+    changePackageJSON(packageFolderPath, '30.0.0-beta.1');
+    changeContextFile(packageFolderPath, '30.0.0-beta.1')
 }
 
 function changePackageJSON(packageFolderPath: string, packageVersion: string) {
@@ -53,7 +48,7 @@ function changeContextFile(packageFolderPath: string, packageVersion: string) {
     files.forEach(file => {
         if (file.endsWith('Context.ts')) {
             const data: string = fs.readFileSync(path.join(packageFolderPath, 'src', file), 'utf8');
-            const result = data.replace(/const packageVersion = "[0-9.a-z-]+"/g, 'const packageVersion = "' + packageVersion + '"');
+            const result = data.replace(/this\.apiVersion = options\.apiVersion \|\| "[0-9.a-z-]+";/g, 'this.apiVersion = options.apiVersion || "' + packageVersion + '";');
             fs.writeFileSync(path.join(packageFolderPath, 'src', file), result, 'utf8');
         }
     })
@@ -89,5 +84,15 @@ export function bumpMinorVersion(version: string) {
     const vArr = version.split('.');
     vArr[1] = String(parseInt(vArr[1]) + 1);
     vArr[2] = '0';
+    return vArr.join('.');
+}
+
+export function bumpPreviewVersion(version: string) {
+    if (!version.includes('beta')) {
+        logger.log(`The original version is not a preview version, currently we don't support bump it. So bump major version`);
+        return bumpMajorVersion(version);
+    }
+    const vArr = version.split('.');
+    vArr[vArr.length-1] = String(parseInt(vArr[vArr.length-1]) + 1);
     return vArr.join('.');
 }
