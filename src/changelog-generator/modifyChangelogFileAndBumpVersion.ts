@@ -27,7 +27,7 @@ This version uses a next-generation code generator that introduces important bre
 
   - Package \`@azure/ms-rest-nodeauth\` or \`@azure/ms-rest-browserauth\` are no longer supported, use package \`@azure/identity\` instead: https://github.com/Azure/azure-sdk-for-js/tree/master/sdk/identity/identity
 
-- Operations with prefix \`begin\` like \`beginXXX\` that used to return a \`Promise<Models.XXX>\` now returns a \`LROPoller\`, and if you want to get previous result, please use operation name with prefix \`begin\` and suffix \`AndWait\`, such as \`beginXXXAndWait\`.
+- Operations with prefix \`begin\` like \`beginXXX\` that used to return a \`Promise<Models.XXX>\` now returns a poller that implements the \`PollerLike\` interface, and if you want to get previous result, please use operation name with prefix \`begin\` and suffix \`AndWait\`, such as \`beginXXXAndWait\`.
 - Operation \`list\` used to return \`Promise<Models.XXX>\` now returns an iterable result: \`PagedAsyncIterableIterator\`.
 - The sdk is based on ES6.
 - Only LTS version of Node.js is supported, and you will get a warning if you are using old Node.js version.
@@ -44,11 +44,13 @@ function changePackageJSON(packageFolderPath: string, packageVersion: string) {
 }
 
 function changeContextFile(packageFolderPath: string, packageVersion: string) {
+    const packageJsonData: any = JSON.parse(fs.readFileSync(path.join(packageFolderPath, 'package.json'), 'utf8'));
+    const packageName = packageJsonData.name.replace("@azure/", "");
     const files: string[] = fs.readdirSync(path.join(packageFolderPath, 'src'));
     files.forEach(file => {
         if (file.endsWith('Context.ts')) {
             const data: string = fs.readFileSync(path.join(packageFolderPath, 'src', file), 'utf8');
-            const result = data.replace(/this\.apiVersion = options\.apiVersion \|\| "[0-9.a-z-]+";/g, 'this.apiVersion = options.apiVersion || "' + packageVersion + '";');
+            const result = data.replace(/const packageDetails = `azsdk-js-[0-9a-z-]+\/[0-9.a-z-]+`;/g, 'const packageDetails = `azsdk-js-' + packageName + '/' + packageVersion + '`;');
             fs.writeFileSync(path.join(packageFolderPath, 'src', file), result, 'utf8');
         }
     })
