@@ -68,9 +68,7 @@ export async function generateChangelogAndBumpVersion (packageFolderPath: string
                 let apiMdFileLocal: string = path.join(packageFolderPath, 'review', fs.readdirSync(path.join(packageFolderPath, 'review'))[0]);
                 const changelog: Changelog = await extractExportAndGenerateChangelog(apiMdFileNPM, apiMdFileLocal);
                 let nextPackageVersion: string = '';
-                if (process.env.Codegen_Preview) {
-                    nextPackageVersion = bumpPreviewVersion(npmPackageVersion);
-                } else {
+                if (process.env.Codegen_Stable) {
                     if (changelog.hasBreakingChange) {
                         nextPackageVersion = bumpMajorVersion(npmPackageVersion);
                     } else if (changelog.hasFeature) {
@@ -78,6 +76,8 @@ export async function generateChangelogAndBumpVersion (packageFolderPath: string
                     } else {
                         nextPackageVersion = npmPackageVersion;
                     }
+                } else {
+                    nextPackageVersion = bumpPreviewVersion(npmPackageVersion);
                 }
                 makeChangesForTrack2ToTrack2(packageFolderPath, nextPackageVersion, changelog);
                 return changelog;

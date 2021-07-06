@@ -53,6 +53,7 @@ function changePackageJson(azureSDKForJSRepoRoot: string, packageFolderPath: str
     dependencies['tslib'] = keyVaultAdminPackageJson.dependencies['tslib'];
     dependencies['@azure/core-rest-pipeline'] = keyVaultAdminPackageJson.dependencies['@azure/core-rest-pipeline'];
     packageJson['sdk-type'] = 'mgmt';
+    packageJson['scripts']['prepack'] = 'npm run build';
     fs.writeFileSync(path.join(packageFolderPath, 'package.json'), JSON.stringify(packageJson,undefined, '  '), {encoding: 'utf-8'});
 }
 
@@ -192,7 +193,7 @@ export async function generateSdkAutomatically(azureSDKForJSRepoRoot: string, ab
                 logger.logGreen(`Installing dependencies for ${changedPackageDirectory}...`);
                 if (packageFolderPath) {
                     const packageJson = JSON.parse(fs.readFileSync(path.join(packageFolderPath, 'package.json'), { encoding: 'utf-8' }));
-                    outputPackageInfo.packageName = packageJson.name;
+
                     changeRushJson(azureSDKForJSRepoRoot, packageJson.name, changedPackageDirectory);
 
                     // This should be deleted when codegen is ready
@@ -208,6 +209,7 @@ export async function generateSdkAutomatically(azureSDKForJSRepoRoot: string, ab
                     logger.logGreen(`node common/scripts/install-run-rush.js pack --to ${packageJson.name} --verbose`);
                     execSync(`node common/scripts/install-run-rush.js pack --to ${packageJson.name} --verbose`, { stdio: 'inherit' });
                     if (outputJson) {
+                        outputPackageInfo.packageName = 'track2_' + packageJson.name;
                         if (changelog) {
                             outputPackageInfo.changelog.hasBreakingChange = changelog.hasBreakingChange;
                             outputPackageInfo.changelog.content = changelog.displayChangeLog();
