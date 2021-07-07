@@ -47,7 +47,7 @@ function changePackageJson(azureSDKForJSRepoRoot: string, packageFolderPath: str
     const devDependencies = packageJson.devDependencies;
     const keyVaultAdminPackageJson = JSON.parse(fs.readFileSync(path.join(azureSDKForJSRepoRoot, 'sdk', 'keyvault', 'keyvault-admin', 'package.json'), {encoding: 'utf-8'}));
     dependencies['@azure/core-client'] = keyVaultAdminPackageJson.dependencies['@azure/core-client'];
-    dependencies['@azure/core-lro'] = keyVaultAdminPackageJson.dependencies['@azure/core-lro'];
+    dependencies['@azure/core-lro'] = dependencies['@azure/core-lro']? keyVaultAdminPackageJson.dependencies['@azure/core-lro'] : undefined;
     devDependencies['@microsoft/api-extractor'] = keyVaultAdminPackageJson.devDependencies['@microsoft/api-extractor'];
     devDependencies['typescript'] = keyVaultAdminPackageJson.devDependencies['typescript'];
     dependencies['tslib'] = keyVaultAdminPackageJson.dependencies['tslib'];
