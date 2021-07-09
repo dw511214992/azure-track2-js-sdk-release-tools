@@ -1,6 +1,6 @@
 {
   "name": "azure-track2-js-sdk-release-tools",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -30,6 +30,7 @@
     "simple-git": "^2.40.0",
     "tslib": "^1.9.3",
     "typescript": "^3.9.7",
+    "url-join": "^4.0.1",
     "yaml": "^1.10.2"
   }
 }
