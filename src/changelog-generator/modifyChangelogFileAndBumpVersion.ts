@@ -59,7 +59,7 @@ function changeContextFile(packageFolderPath: string, packageVersion: string) {
 
 export function makeChangesForTrack2ToTrack2(packageFolderPath: string, packageVersion: string, changeLog: Changelog) {
     const originalChangeLogContent = fs.readFileSync(path.join(packageFolderPath, 'changelog-temp', 'package', 'CHANGELOG.md'), {encoding: 'utf-8'});
-    const modifiedChangelogContent = `## ${packageVersion}
+    const modifiedChangelogContent = `## ${packageVersion} (Unreleased)
     
 ${changeLog.displayChangeLog()}
     
