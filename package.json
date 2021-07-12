@@ -7,7 +7,9 @@
   "scripts": {
     "start": "node dist/changelog-generator/generateChangelogAndBumpVersionCLI.js",
     "debug": "node --inspect-brk dist/changelog-generator/generateChangelogAndBumpVersionCLI.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "prepack": "npm run build"
   },
   "bin": {
     "track2-js-sdk-changelog-tool": "./dist/changelog-generator/generateChangelogAndBumpVersionCLI.js",
