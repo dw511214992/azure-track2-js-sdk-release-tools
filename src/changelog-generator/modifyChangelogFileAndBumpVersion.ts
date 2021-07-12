@@ -100,7 +100,7 @@ export function bumpMinorVersion(version: string) {
 
 export function bumpPreviewVersion(version: string) {
     if (!version.includes('beta')) {
-        logger.log(`The original version is not a preview version, currently we don't support bump it. So bump major version`);
+        logger.log(`Detected original version is not a preview version, which represents Codegen has been Stable and please set environment variable Codegen_Stable. Currently, bump major version.`);
         return bumpMajorVersion(version);
     }
     const vArr = version.split('.');
