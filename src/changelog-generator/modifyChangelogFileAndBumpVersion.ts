@@ -72,22 +72,30 @@ ${originalChangeLogContent}`;
 }
 
 export function bumpMajorVersion(version: string) {
-    const vArr = version.split('.');
-    if (vArr[0] == '0') {
-        vArr[1] = String(parseInt(vArr[1]) + 1);
+    if (version.includes('beta')) {
+        return bumpPreviewVersion(version);
     } else {
-        vArr[0] = String(parseInt(vArr[0]) + 1);
-        vArr[1] = '0';
+        const vArr = version.split('.');
+        if (vArr[0] == '0') {
+            vArr[1] = String(parseInt(vArr[1]) + 1);
+        } else {
+            vArr[0] = String(parseInt(vArr[0]) + 1);
+            vArr[1] = '0';
+        }
+        vArr[2] = '0';
+        return vArr.join('.');
     }
-    vArr[2] = '0';
-    return vArr.join('.');
 }
 
 export function bumpMinorVersion(version: string) {
-    const vArr = version.split('.');
-    vArr[1] = String(parseInt(vArr[1]) + 1);
-    vArr[2] = '0';
-    return vArr.join('.');
+    if (version.includes('beta')) {
+        return bumpPreviewVersion(version);
+    } else {
+        const vArr = version.split('.');
+        vArr[1] = String(parseInt(vArr[1]) + 1);
+        vArr[2] = '0';
+        return vArr.join('.');
+    }
 }
 
 export function bumpPreviewVersion(version: string) {
