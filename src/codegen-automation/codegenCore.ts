@@ -53,7 +53,6 @@ function changePackageJson(azureSDKForJSRepoRoot: string, packageFolderPath: str
     devDependencies['typescript'] = keyVaultAdminPackageJson.devDependencies['typescript'];
     dependencies['tslib'] = keyVaultAdminPackageJson.dependencies['tslib'];
     dependencies['@azure/core-rest-pipeline'] = keyVaultAdminPackageJson.dependencies['@azure/core-rest-pipeline'];
-    packageJson['sdk-type'] = 'mgmt';
     packageJson['scripts']['prepack'] = 'npm run build';
     packageJson['homepage'] = urljoin('https://github.com/Azure/azure-sdk-for-js/tree/main/', relativePackageFolderPath);
     fs.writeFileSync(path.join(packageFolderPath, 'package.json'), JSON.stringify(packageJson,undefined, '  '), {encoding: 'utf-8'});
@@ -135,17 +134,6 @@ extends:
     }
 }
 
-function changeReadmeMd(packageFolderPath: string) {
-    const readmeMdPath = path.join(packageFolderPath, 'README.md');
-    let content = fs.readFileSync(readmeMdPath, {encoding: 'utf-8'});
-    content = content.replace(/https:\/\/github\.com\/Azure\/azure-sdk-for-js\/tree\/master\/sdk\/[^\/]*\/arm-[^\/]*\/samples/g, 'https://github.com/Azure-Samples/azure-samples-js-management');
-    content = content.replace(/\n\[Source code\]/g, '\nKey links:\n- [Source code]');
-    content = content.replace(/\n\[Package \(NPM\)\]/g, '\n- [Package (NPM)]');
-    content = content.replace(/\n\[API reference documentation\]/g, '\n- [API reference documentation]');
-    content = content.replace(/\n\[Samples\]/g, '\n- [Samples]');
-    fs.writeFileSync(readmeMdPath, content, {encoding: 'utf-8'});
-}
-
 export async function generateSdkAutomatically(azureSDKForJSRepoRoot: string, absoluteReadmeMd: string, relativeReadmeMd: string, gitCommitId: string, tag?: string, use?: string, useDebugger?: boolean, outputJson?: any, swaggerRepoUrl?: string) {
     logger.logGreen(`>>>>>>>>>>>>>>>>>>> Start: "${absoluteReadmeMd}" >>>>>>>>>>>>>>>>>>>>>>>>>`);
 
@@ -204,7 +192,6 @@ export async function generateSdkAutomatically(azureSDKForJSRepoRoot: string, ab
 
                     // This should be deleted when codegen is ready
                     changePackageJson(azureSDKForJSRepoRoot, packageFolderPath, packageJson, changedPackageDirectory);
-                    changeReadmeMd(packageFolderPath);
 
                     logger.logGreen(`rush update`);
                     execSync('rush update', { stdio: 'inherit' });
