@@ -232,8 +232,8 @@ export async function generateSdkAutomatically(azureSDKForJSRepoRoot: string, ab
                     throw 'find undefined packageFolderPath'
                 }
             } catch (e) {
-                logger.log('Error:');
-                logger.log(`An error occurred while generating codes and run build for readme file: "${absoluteReadmeMd}":\nErr: ${e}\nStderr: "${e.stderr}\nStdout: "${e.stdout}"`);
+                logger.logError('Error:');
+                logger.logError(`An error occurred while generating codes and run build for readme file: "${absoluteReadmeMd}":\nErr: ${e}\nStderr: "${e.stderr}\nStdout: "${e.stdout}"`);
                 outputPackageInfo.result = 'failed';
             } finally {
                 if (outputJson) {

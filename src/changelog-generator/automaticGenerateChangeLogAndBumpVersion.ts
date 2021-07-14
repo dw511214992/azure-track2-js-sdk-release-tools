@@ -77,9 +77,17 @@ export async function generateChangelogAndBumpVersion (packageFolderPath: string
                         nextPackageVersion = npmPackageVersion;
                     }
                 } else {
-                    nextPackageVersion = bumpPreviewVersion(npmPackageVersion);
+                    if (changelog.hasBreakingChange || changelog.hasFeature) {
+                        nextPackageVersion = bumpPreviewVersion(npmPackageVersion);
+                    } else {
+                        nextPackageVersion = npmPackageVersion;
+                    }
                 }
-                makeChangesForTrack2ToTrack2(packageFolderPath, nextPackageVersion, changelog);
+                if (changelog.hasBreakingChange || changelog.hasFeature) {
+                    makeChangesForTrack2ToTrack2(packageFolderPath, nextPackageVersion, changelog);
+                } else {
+                    logger.logError('Generate Changelog and Bump version failed because do not find any changes')
+                }
                 return changelog;
             } else {
                 logger.log('Migrate Track1 to Track2');
@@ -90,4 +98,4 @@ export async function generateChangelogAndBumpVersion (packageFolderPath: string
             await shell.cd(initialPath);
         }
     }
-};
+}

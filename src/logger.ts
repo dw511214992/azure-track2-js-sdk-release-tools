@@ -71,7 +71,7 @@ class Logger {
     }
 
     logError(text: string): void {
-        this.log(text.bgRed);
+        this.log(text.red);
     }
 
     logWarn(text: string): void {
