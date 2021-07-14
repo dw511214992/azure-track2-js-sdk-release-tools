@@ -3,9 +3,17 @@ import {logger} from "../logger";
 
 const fs = require('fs');
 const path = require('path');
+
+const todayDate = new Date();
+const dd = String(todayDate.getDate()).padStart(2, '0');
+const mm = String(todayDate.getMonth() + 1).padStart(2, '0'); //January is 0!
+const yyyy = todayDate.getFullYear();
+
+const date = yyyy + '-' + mm + '-' + dd;
+
 export function makeChangesForFirstRelease(packageFolderPath: string) {
 
-    const content = `## 0.1.0-beta.1 (Unreleased)
+    const content = `## 0.1.0-beta.1 (${date})
 
   - Initial Release
 `;
@@ -16,7 +24,7 @@ export function makeChangesForFirstRelease(packageFolderPath: string) {
 
 export function makeChangesForMigrateTrack1ToTrack2(packageFolderPath: string) {
     const packageJsonData: any = JSON.parse(fs.readFileSync(path.join(packageFolderPath, 'package.json'), 'utf8'));
-    const content = `## 30.0.0-beta.1 (Unreleased)
+    const content = `## 30.0.0-beta.1 (${date})
 
 This is beta preview version.
 
@@ -59,7 +67,7 @@ function changeContextFile(packageFolderPath: string, packageVersion: string) {
 
 export function makeChangesForTrack2ToTrack2(packageFolderPath: string, packageVersion: string, changeLog: Changelog) {
     const originalChangeLogContent = fs.readFileSync(path.join(packageFolderPath, 'changelog-temp', 'package', 'CHANGELOG.md'), {encoding: 'utf-8'});
-    const modifiedChangelogContent = `## ${packageVersion} (Unreleased)
+    const modifiedChangelogContent = `## ${packageVersion} (${date})
     
 ${changeLog.displayChangeLog()}
     
