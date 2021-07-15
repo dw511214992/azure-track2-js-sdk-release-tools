@@ -137,7 +137,7 @@ extends:
 export async function generateSdkAutomatically(azureSDKForJSRepoRoot: string, absoluteReadmeMd: string, relativeReadmeMd: string, gitCommitId: string, tag?: string, use?: string, useDebugger?: boolean, outputJson?: any, swaggerRepoUrl?: string) {
     logger.logGreen(`>>>>>>>>>>>>>>>>>>> Start: "${absoluteReadmeMd}" >>>>>>>>>>>>>>>>>>>>>>>>>`);
 
-    let cmd = `autorest --version=3.1.3 --typescript --modelerfour.lenient-model-deduplication --license-header=MICROSOFT_MIT_NO_VERSION --typescript-sdks-folder=${azureSDKForJSRepoRoot} ${absoluteReadmeMd}`;
+    let cmd = `autorest --version=3.1.3 --typescript --modelerfour.lenient-model-deduplication --head-as-boolean=true --license-header=MICROSOFT_MIT_NO_VERSION --typescript-sdks-folder=${azureSDKForJSRepoRoot} ${absoluteReadmeMd}`;
 
     if (tag) {
         cmd += ` --tag=${tag}`;
