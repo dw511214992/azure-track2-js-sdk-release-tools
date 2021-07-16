@@ -24,7 +24,7 @@ const extractExportAndGenerateChangelog = async (mdFilePathOld: string, mdFilePa
 function getNewestVersion(npmViewResult: NPMViewResult) {
     const distTags: StringMap<string> | undefined = npmViewResult['dist-tags'];
     const versionLatest = distTags && distTags['latest'];
-    const versionBeta = distTags && distTags['beta'];
+    const versionBeta = distTags && distTags['next'];
     if (versionLatest && versionBeta) {
         const semver = require('semver');
         if (semver.gt(versionLatest, versionBeta)) {
