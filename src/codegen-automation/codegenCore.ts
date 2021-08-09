@@ -101,7 +101,8 @@ function modifyOrGenerateCiYaml(azureSDKForJSRepoRoot: string, changedPackageDir
                 fs.writeFileSync(ciYamlPath, yaml.stringify(ciYaml), {encoding: 'utf-8'});
             }
         } else {
-            const ciYaml = `trigger:
+            const ciYaml = `# NOTE: Please refer to https://aka.ms/azsdk/engsys/ci-yaml before editing this file.
+trigger:
   branches:
     include:
       - main
