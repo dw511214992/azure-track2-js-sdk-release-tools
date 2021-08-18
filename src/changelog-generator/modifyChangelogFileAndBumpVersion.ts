@@ -13,13 +13,13 @@ const date = yyyy + '-' + mm + '-' + dd;
 
 export function makeChangesForFirstRelease(packageFolderPath: string) {
 
-    const content = `## 0.1.0-beta.1 (${date})
+    const content = `## 1.0.0-beta.1 (${date})
 
   - Initial Release
 `;
     fs.writeFileSync(path.join(packageFolderPath, 'CHANGELOG.md'), content, 'utf8');
-    changePackageJSON(packageFolderPath, '0.1.0-beta.1');
-    changeContextFile(packageFolderPath, '0.1.0-beta.1')
+    changePackageJSON(packageFolderPath, '1.0.0-beta.1');
+    changeContextFile(packageFolderPath, '1.0.0-beta.1')
 }
 
 export function makeChangesForMigrateTrack1ToTrack2(packageFolderPath: string) {

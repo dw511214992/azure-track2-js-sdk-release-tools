@@ -192,7 +192,7 @@ export async function generateSdkAutomatically(azureSDKForJSRepoRoot: string, ab
                     changeRushJson(azureSDKForJSRepoRoot, packageJson.name, changedPackageDirectory);
 
                     // This should be deleted when codegen is ready
-                    changePackageJson(azureSDKForJSRepoRoot, packageFolderPath, packageJson, changedPackageDirectory);
+                    // changePackageJson(azureSDKForJSRepoRoot, packageFolderPath, packageJson, changedPackageDirectory);
 
                     logger.logGreen(`rush update`);
                     execSync('rush update', { stdio: 'inherit' });
