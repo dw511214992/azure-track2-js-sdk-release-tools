@@ -43,7 +43,6 @@ export class Changelog {
             this.interfaceParamAddRequired.length > 0 ||
             this.interfaceParamChangeRequired.length > 0 ||
             this.classParamDelete.length > 0 ||
-            this.classAddRequiredParam.length > 0 ||
             this.classParamChangeRequired.length > 0 ||
             this.typeAliasDeleteInherit.length > 0 ||
             this.typeAliasParamDelete.length > 0 ||
@@ -100,7 +99,6 @@ export class Changelog {
                 .concat(this.interfaceParamAddRequired)
                 .concat(this.interfaceParamChangeRequired)
                 .concat(this.classParamDelete)
-                .concat(this.classAddRequiredParam)
                 .concat(this.classParamChangeRequired)
                 .concat(this.typeAliasDeleteInherit)
                 .concat(this.typeAliasParamDelete)
@@ -212,17 +210,15 @@ const findClassAddedParam = (metaDataOld: TSExportedMetaData, metaDataNew: TSExp
             const modelFromOld = metaDataOld.classes[model] as ClassDeclaration;
             const modelFromNew = metaDataNew.classes[model] as ClassDeclaration;
             modelFromNew.properties.forEach(pNew => {
-                if (pNew.isOptional) {
-                    let find = false;
-                    modelFromOld.properties.forEach(pOld => {
-                        if (pNew.name === pOld.name) {
-                            find = true;
-                            return;
-                        }
-                    });
-                    if (!find) {
-                        classAddedParam.push('Class ' + model + ' has a new optional parameter ' + pNew.name);
+                let find = false;
+                modelFromOld.properties.forEach(pOld => {
+                    if (pNew.name === pOld.name) {
+                        find = true;
+                        return;
                     }
+                });
+                if (!find) {
+                    classAddedParam.push('Class ' + model + ' has a new parameter ' + pNew.name);
                 }
             });
         }
@@ -565,31 +561,6 @@ const findClassParamDelete = (metaDataOld: TSExportedMetaData, metaDataNew: TSEx
     return classDeleteParam;
 };
 
-const findClassAddRequiredParam = (metaDataOld: TSExportedMetaData, metaDataNew: TSExportedMetaData): string[] => {
-    const classAddedRequiredParam: string[] = [];
-    Object.keys(metaDataNew.classes).forEach(model => {
-        if (metaDataOld.classes[model]) {
-            const modelFromOld = metaDataOld.classes[model] as ClassDeclaration;
-            const modelFromNew = metaDataNew.classes[model] as ClassDeclaration;
-            modelFromNew.properties.forEach(pNew => {
-                if (!pNew.isOptional) {
-                    let find = false;
-                    modelFromOld.properties.forEach(pOld => {
-                        if (pNew.name === pOld.name) {
-                            find = true;
-                            return;
-                        }
-                    });
-                    if (!find) {
-                        classAddedRequiredParam.push('Class ' + model + ' has a new required parameter ' + pNew.name);
-                    }
-                }
-            });
-        }
-    });
-    return classAddedRequiredParam;
-};
-
 const findClassParamChangeRequired = (metaDataOld: TSExportedMetaData, metaDataNew: TSExportedMetaData): string[] => {
     const classParamChangeRequired: string[] = [];
     Object.keys(metaDataNew.classes).forEach(model => {
@@ -920,7 +891,6 @@ export const changelogGenerator = (metaDataOld: TSExportedMetaData, metadataNew:
     changLog.interfaceParamAddRequired = findInterfaceParamAddRequired(metaDataOld, metadataNew);
     changLog.interfaceParamChangeRequired = findInterfaceParamChangeRequired(metaDataOld, metadataNew);
     changLog.classParamDelete = findClassParamDelete(metaDataOld, metadataNew);
-    changLog.classAddRequiredParam = findClassAddRequiredParam(metaDataOld, metadataNew);
     changLog.classParamChangeRequired = findClassParamChangeRequired(metaDataOld, metadataNew);
     changLog.typeAliasDeleteInherit = findTypeAliasDeleteInherit(metaDataOld, metadataNew);
     changLog.typeAliasParamDelete = findTypeAliasDeleteParam(metaDataOld, metadataNew);
