@@ -1,6 +1,6 @@
 import {readSourceAndExtractMetaData} from "./extractMetaData";
 import {Changelog, changelogGenerator} from "./ChangelogGenerator";
-import {NPMScope, NPMViewResult, StringMap} from "@ts-common/azure-js-dev-tools";
+import {npm, NPMScope, NPMViewResult, StringMap} from "@ts-common/azure-js-dev-tools";
 import {
     bumpMajorVersion,
     bumpMinorVersion, bumpPreviewVersion,
@@ -21,24 +21,40 @@ const extractExportAndGenerateChangelog = async (mdFilePathOld: string, mdFilePa
     return changeLog;
 };
 
-function getNewestVersion(npmViewResult: NPMViewResult) {
-    const distTags: StringMap<string> | undefined = npmViewResult['dist-tags'];
-    const versionLatest = distTags && distTags['latest'];
-    const versionBeta = distTags && distTags['next'];
-    if (versionLatest && versionBeta) {
-        const semver = require('semver');
-        if (semver.gt(versionLatest, versionBeta)) {
-            return versionLatest;
-        } else {
-            return versionBeta;
-        }
+function previewGreaterOneThanStable(preview: string | undefined, stable: string | undefined) {
+    if (!preview || !stable) return false;
+    const majorOfPreview = parseInt(preview.split('.')[0]);
+    const majorOfStable = parseInt(stable.split('.')[0]);
+    if (majorOfPreview === 0 && majorOfStable === 0) {
+        return parseInt(preview.split('.')[1]) - parseInt(stable.split('.')[1]) === 1;
+    } else if (majorOfPreview > 0 && majorOfStable > 1) {
+        return majorOfPreview - majorOfStable === 1;
     } else {
-        if (versionBeta) return versionBeta;
-        else return versionLatest;
+        return false;
     }
 }
 
-export async function generateChangelogAndBumpVersion (packageFolderPath: string) {
+function getLatestPreviewVersion(npmViewResult: NPMViewResult) {
+    const distTags: StringMap<string> | undefined = npmViewResult['dist-tags'];
+    const versionPreview = distTags && distTags['next'];
+    return versionPreview;
+}
+
+function getNextPreviewVersion(npmViewResult: NPMViewResult) {
+    const distTags: StringMap<string> | undefined = npmViewResult['dist-tags'];
+    const versionPreview = distTags && distTags['next'];
+    const versionStable = distTags && distTags['latest'];
+    if (!versionStable) {
+        logger.logError('Cannot get stable version');
+        process.exit(1);
+    } else if (versionPreview && previewGreaterOneThanStable(versionPreview, versionStable)) {
+        return bumpPreviewVersion(versionPreview, npmViewResult['versions']);
+    } else {
+        return bumpMajorVersion(versionStable, npmViewResult['versions']) + '-beta.1';
+    }
+}
+
+export async function generateChangelogAndBumpVersion(packageFolderPath: string) {
     const shell = require('shelljs');
     const initialPath = String(shell.pwd());
     packageFolderPath = path.join(initialPath, packageFolderPath);
@@ -49,49 +65,33 @@ export async function generateChangelogAndBumpVersion (packageFolderPath: string
         logger.log('First Release');
         makeChangesForFirstRelease(packageFolderPath);
     } else {
-        const npmPackageVersion = getNewestVersion(npmViewResult);
-        if (!npmPackageVersion) {
-            logger.log('Cannot get package version from npm');
-            return;
-        }
-        await shell.mkdir(path.join(packageFolderPath, 'changelog-temp'));
-        await shell.cd(path.join(packageFolderPath, 'changelog-temp'));
-        await shell.exec(`npm pack ${packageName}@${npmPackageVersion}`);
-        await shell.exec('tar -xzf *.tgz');
-        await shell.cd(packageFolderPath);
+        const previewVersion = getLatestPreviewVersion(npmViewResult);
+        const nextPreviewVersion = getNextPreviewVersion(npmViewResult);
 
-        const reviewFolder = path.join(packageFolderPath, 'changelog-temp', 'package', 'review');
         try {
-            if (fs.existsSync(reviewFolder)) {
+            if (previewVersion) {
+                await shell.mkdir(path.join(packageFolderPath, 'changelog-temp'));
+                await shell.cd(path.join(packageFolderPath, 'changelog-temp'));
+                await shell.exec(`npm pack ${packageName}@${previewVersion}`);
+                await shell.exec('tar -xzf *.tgz');
+                await shell.cd(packageFolderPath);
+
+                const reviewFolder = path.join(packageFolderPath, 'changelog-temp', 'package', 'review');
+
                 logger.log('Generate Changelog By Comparing Api.md');
                 let apiMdFileNPM: string = path.join(reviewFolder, fs.readdirSync(reviewFolder)[0]);
                 let apiMdFileLocal: string = path.join(packageFolderPath, 'review', fs.readdirSync(path.join(packageFolderPath, 'review'))[0]);
                 const changelog: Changelog = await extractExportAndGenerateChangelog(apiMdFileNPM, apiMdFileLocal);
-                let nextPackageVersion: string = '';
-                if (process.env.Codegen_Stable) {
-                    if (changelog.hasBreakingChange) {
-                        nextPackageVersion = bumpMajorVersion(npmPackageVersion);
-                    } else if (changelog.hasFeature) {
-                        nextPackageVersion = bumpMinorVersion(npmPackageVersion);
-                    } else {
-                        nextPackageVersion = npmPackageVersion;
-                    }
-                } else {
-                    if (changelog.hasBreakingChange || changelog.hasFeature) {
-                        nextPackageVersion = bumpPreviewVersion(npmPackageVersion);
-                    } else {
-                        nextPackageVersion = npmPackageVersion;
-                    }
-                }
+
                 if (changelog.hasBreakingChange || changelog.hasFeature) {
-                    makeChangesForTrack2ToTrack2(packageFolderPath, nextPackageVersion, changelog);
+                    makeChangesForTrack2ToTrack2(packageFolderPath, nextPreviewVersion, changelog);
                 } else {
                     logger.logError('Generate Changelog and Bump version failed because do not find any changes')
                 }
                 return changelog;
             } else {
                 logger.log('Migrate Track1 to Track2');
-                makeChangesForMigrateTrack1ToTrack2(packageFolderPath);
+                makeChangesForMigrateTrack1ToTrack2(packageFolderPath, nextPreviewVersion);
             }
         } finally {
             await shell.exec(`rm -r ${path.join(packageFolderPath, 'changelog-temp')}`);

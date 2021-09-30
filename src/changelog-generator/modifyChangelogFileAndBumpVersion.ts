@@ -22,9 +22,9 @@ export function makeChangesForFirstRelease(packageFolderPath: string) {
     changeContextFile(packageFolderPath, '1.0.0-beta.1')
 }
 
-export function makeChangesForMigrateTrack1ToTrack2(packageFolderPath: string) {
+export function makeChangesForMigrateTrack1ToTrack2(packageFolderPath: string, nextPackageVersion: string) {
     const packageJsonData: any = JSON.parse(fs.readFileSync(path.join(packageFolderPath, 'package.json'), 'utf8'));
-    const content = `## 30.0.0-beta.1 (${date})
+    const content = `## ${nextPackageVersion} (${date})
 
 This is the first preview for the new version of the \`${packageJsonData.name}\` package that follows the new [guidelines for TypeScript SDKs](https://azure.github.io/azure-sdk/typescript_introduction.html) for Azure services.
 
@@ -40,8 +40,8 @@ Please note that this version has breaking changes, all of which were made after
 - The SDK only supports ECMAScript 2015 (ES6) and beyond, all projects that referenced this SDK should be upgraded to use ES6.
 `;
     fs.writeFileSync(path.join(packageFolderPath, 'CHANGELOG.md'), content, 'utf8');
-    changePackageJSON(packageFolderPath, '30.0.0-beta.1');
-    changeContextFile(packageFolderPath, '30.0.0-beta.1')
+    changePackageJSON(packageFolderPath, nextPackageVersion);
+    changeContextFile(packageFolderPath, nextPackageVersion)
 }
 
 function changePackageJSON(packageFolderPath: string, packageVersion: string) {
@@ -77,39 +77,47 @@ ${originalChangeLogContent}`;
     changeContextFile(packageFolderPath, packageVersion)
 }
 
-export function bumpMajorVersion(version: string) {
+export function bumpMajorVersion(version: string, usedVersions: string[] | undefined) {
     if (version.includes('beta')) {
-        return bumpPreviewVersion(version);
+        return bumpPreviewVersion(version, usedVersions);
     } else {
         const vArr = version.split('.');
-        if (vArr[0] == '0') {
-            vArr[1] = String(parseInt(vArr[1]) + 1);
-        } else {
-            vArr[0] = String(parseInt(vArr[0]) + 1);
-            vArr[1] = '0';
+        let newVersion = version;
+        while (usedVersions && usedVersions.includes(newVersion)) {
+            if (vArr[0] == '0') {
+                vArr[1] = String(parseInt(vArr[1]) + 1);
+            } else {
+                vArr[0] = String(parseInt(vArr[0]) + 1);
+                vArr[1] = '0';
+            }
+            vArr[2] = '0';
+            newVersion = vArr.join('.');
         }
-        vArr[2] = '0';
-        return vArr.join('.');
+        return newVersion;
     }
 }
 
-export function bumpMinorVersion(version: string) {
+export function bumpMinorVersion(version: string, usedVersions: string[] | undefined) {
     if (version.includes('beta')) {
-        return bumpPreviewVersion(version);
+        return bumpPreviewVersion(version, usedVersions);
     } else {
         const vArr = version.split('.');
-        vArr[1] = String(parseInt(vArr[1]) + 1);
-        vArr[2] = '0';
-        return vArr.join('.');
+        let newVersion = version;
+        while (usedVersions && usedVersions.includes(newVersion)) {
+            vArr[1] = String(parseInt(vArr[1]) + 1);
+            vArr[2] = '0';
+            newVersion = vArr.join('.');
+        }
+        return newVersion;
     }
 }
 
-export function bumpPreviewVersion(version: string) {
-    if (!version.includes('beta')) {
-        logger.logError(`Detected original version is not a preview version, which represents Codegen has been Stable and please set environment variable Codegen_Stable. Currently, bump major version.`);
-        return bumpMajorVersion(version);
-    }
+export function bumpPreviewVersion(version: string, usedVersions: string[] | undefined) {
     const vArr = version.split('.');
-    vArr[vArr.length-1] = String(parseInt(vArr[vArr.length-1]) + 1);
-    return vArr.join('.');
+    let newVersion = version;
+    while (usedVersions && usedVersions.includes(newVersion)) {
+        vArr[vArr.length-1] = String(parseInt(vArr[vArr.length-1]) + 1);
+        newVersion = vArr.join('.');
+    }
+    return newVersion;
 }
