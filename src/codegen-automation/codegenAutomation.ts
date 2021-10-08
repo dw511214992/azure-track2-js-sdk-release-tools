@@ -7,7 +7,7 @@ import {generateSdkAutomatically} from "./codegenCore";
 const shell = require('shelljs');
 
 async function automationGenerate(absoluteReadmeMd: string, tag?: string, use?: string, useDebugger?: boolean) {
-    const regexResult = /^(.*\/azure-rest-api-specs)\/(specification.*)/.exec(absoluteReadmeMd);
+    const regexResult = /^(.*\/azure-rest-api-specs[-pr]*)\/(specification.*)/.exec(absoluteReadmeMd);
     if (!regexResult || regexResult.length !== 3) {
         logger.logError(`Cannot Parse readme file path: ${absoluteReadmeMd}`);
     } else {
