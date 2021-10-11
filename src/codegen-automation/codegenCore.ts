@@ -1,9 +1,9 @@
-import {logger} from "../logger";
+import {logger} from "../logger/logger";
 import { execSync } from "child_process";
 
 import fs from "fs";
 import * as path from "path";
-import {getChangedPackageDirectory} from "./git";
+import {getChangedPackageDirectory} from "../utils/git";
 import {generateChangelogAndBumpVersion} from "../changelog-generator/automaticGenerateChangeLogAndBumpVersion";
 import {Changelog} from "../changelog-generator/ChangelogGenerator";
 

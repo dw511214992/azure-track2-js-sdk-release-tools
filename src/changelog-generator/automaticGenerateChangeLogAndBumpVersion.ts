@@ -8,7 +8,7 @@ import {
     makeChangesForMigrateTrack1ToTrack2,
     makeChangesForTrack2ToTrack2
 } from "./modifyChangelogFileAndBumpVersion";
-import {logger} from "../logger";
+import {logger} from "../logger/logger";
 
 const fs = require('fs');
 const path = require('path');

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import {logger} from "../logger";
-import {getLastCommitId} from "./git";
+import {logger} from "../logger/logger";
+import {getLastCommitId} from "../utils/git";
 import {generateSdkAutomatically} from "./codegenCore";
 
 const shell = require('shelljs');

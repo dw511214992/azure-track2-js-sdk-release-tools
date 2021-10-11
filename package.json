@@ -2,12 +2,9 @@
   "name": "azure-track2-js-sdk-release-tools",
   "version": "0.1.31",
   "description": "",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
   "scripts": {
     "start": "node dist/changelog-generator/generateChangelogAndBumpVersionCLI.js",
     "debug": "node --inspect-brk dist/changelog-generator/generateChangelogAndBumpVersionCLI.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "prepack": "npm run build"
   },
@@ -27,11 +24,11 @@
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.10",
     "log": "^6.0.0",
+    "parse-ts-to-ast": "^0.1.1",
     "semver": "^7.3.5",
     "shelljs": "^0.8.4",
     "simple-git": "^2.40.0",
     "tslib": "^1.9.3",
-    "typescript": "^3.9.7",
     "url-join": "^4.0.1",
     "yaml": "^1.10.2"
   }

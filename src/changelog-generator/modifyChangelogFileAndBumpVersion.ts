@@ -1,5 +1,5 @@
 import {Changelog} from "./ChangelogGenerator";
-import {logger} from "../logger";
+import {logger} from "../logger/logger";
 
 const fs = require('fs');
 const path = require('path');

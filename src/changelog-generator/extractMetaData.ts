@@ -1,6 +1,6 @@
 import * as openapiToolsCommon from "@azure-tools/openapi-tools-common";
-import {TypescriptParser} from "./TypescriptParser";
-import {ClassDeclaration, EnumDeclaration, InterfaceDeclaration, TypeAliasDeclaration} from "./declarations";
+import {TypescriptParser} from "parse-ts-to-ast";
+import {ClassDeclaration, EnumDeclaration, InterfaceDeclaration, TypeAliasDeclaration} from "parse-ts-to-ast";
 
 export class TSExportedMetaData {
     public typeAlias = {};

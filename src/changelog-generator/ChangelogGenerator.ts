@@ -1,7 +1,7 @@
 import {TSExportedMetaData} from "./extractMetaData";
-import {ClassDeclaration, EnumDeclaration, InterfaceDeclaration, ModuleDeclaration, ParameterDeclaration, PropertyDeclaration, TypeAliasDeclaration} from "./declarations";
-import {IntersectionDeclaration} from "./declarations/IntersectionDeclaration";
-import {TypeLiteralDeclaration} from "./declarations/TypeLiteralDeclaration";
+import {ClassDeclaration, EnumDeclaration, InterfaceDeclaration, TypeAliasDeclaration} from "parse-ts-to-ast";
+import {IntersectionDeclaration} from "parse-ts-to-ast/build/declarations/IntersectionDeclaration";
+import {TypeLiteralDeclaration} from "parse-ts-to-ast/build/declarations/TypeLiteralDeclaration";
 
 export class Changelog {
     // features
