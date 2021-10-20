@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
-import {generateChangelogAndBumpVersion} from "./automaticGenerateChangeLogAndBumpVersion";
+import {generateChangelogAndBumpVersion} from "./changelogGenerationAndVersionBumpCore/automaticGenerateChangeLogAndBumpVersion";
+import {logger} from "./utils/logger";
 
 const generateChangelogAndBumpVersionCLI = async (packageFolderPath: string | undefined) => {
     if (!packageFolderPath) {
-        console.log(`invalid package path`);
+        logger.logError(`invalid package path ${packageFolderPath}`);
     } else {
         await generateChangelogAndBumpVersion(packageFolderPath);
     }

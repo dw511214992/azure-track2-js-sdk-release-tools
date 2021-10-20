@@ -1,5 +1,4 @@
 import {Changelog} from "./ChangelogGenerator";
-import {logger} from "../logger/logger";
 
 const fs = require('fs');
 const path = require('path');
@@ -11,15 +10,15 @@ const yyyy = todayDate.getFullYear();
 
 const date = yyyy + '-' + mm + '-' + dd;
 
-export function makeChangesForFirstRelease(packageFolderPath: string) {
-
-    const content = `## 1.0.0-beta.1 (${date})
+export function makeChangesForFirstRelease(packageFolderPath: string, isStableRelease: boolean) {
+    const newVersion = isStableRelease? '1.0.0' : '1.0.0-beta.1';
+    const content = `## ${newVersion} (${date})
 
   - Initial Release
 `;
     fs.writeFileSync(path.join(packageFolderPath, 'CHANGELOG.md'), content, 'utf8');
-    changePackageJSON(packageFolderPath, '1.0.0-beta.1');
-    changeContextFile(packageFolderPath, '1.0.0-beta.1')
+    changePackageJSON(packageFolderPath, newVersion);
+    changeContextFile(packageFolderPath, newVersion);
 }
 
 export function makeChangesForMigrateTrack1ToTrack2(packageFolderPath: string, nextPackageVersion: string) {
@@ -63,7 +62,7 @@ function changeContextFile(packageFolderPath: string, packageVersion: string) {
     })
 }
 
-export function makeChangesForTrack2ToTrack2(packageFolderPath: string, packageVersion: string, changeLog: Changelog) {
+export function makeChangesForReleasingTrack2(packageFolderPath: string, packageVersion: string, changeLog: Changelog) {
     const originalChangeLogContent = fs.readFileSync(path.join(packageFolderPath, 'changelog-temp', 'package', 'CHANGELOG.md'), {encoding: 'utf-8'});
     const modifiedChangelogContent = `## ${packageVersion} (${date})
     
@@ -77,47 +76,4 @@ ${originalChangeLogContent}`;
     changeContextFile(packageFolderPath, packageVersion)
 }
 
-export function bumpMajorVersion(version: string, usedVersions: string[] | undefined) {
-    if (version.includes('beta')) {
-        return bumpPreviewVersion(version, usedVersions);
-    } else {
-        const vArr = version.split('.');
-        let newVersion = version;
-        while (usedVersions && usedVersions.includes(newVersion)) {
-            if (vArr[0] == '0') {
-                vArr[1] = String(parseInt(vArr[1]) + 1);
-            } else {
-                vArr[0] = String(parseInt(vArr[0]) + 1);
-                vArr[1] = '0';
-            }
-            vArr[2] = '0';
-            newVersion = vArr.join('.');
-        }
-        return newVersion;
-    }
-}
 
-export function bumpMinorVersion(version: string, usedVersions: string[] | undefined) {
-    if (version.includes('beta')) {
-        return bumpPreviewVersion(version, usedVersions);
-    } else {
-        const vArr = version.split('.');
-        let newVersion = version;
-        while (usedVersions && usedVersions.includes(newVersion)) {
-            vArr[1] = String(parseInt(vArr[1]) + 1);
-            vArr[2] = '0';
-            newVersion = vArr.join('.');
-        }
-        return newVersion;
-    }
-}
-
-export function bumpPreviewVersion(version: string, usedVersions: string[] | undefined) {
-    const vArr = version.split('.');
-    let newVersion = version;
-    while (usedVersions && usedVersions.includes(newVersion)) {
-        vArr[vArr.length-1] = String(parseInt(vArr[vArr.length-1]) + 1);
-        newVersion = vArr.join('.');
-    }
-    return newVersion;
-}

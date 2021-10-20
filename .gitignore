@@ -1,6 +1,4 @@
 dist
 node_modules
-report1.json
-report2.json
-changlog.json
 *.tgz
+.idea

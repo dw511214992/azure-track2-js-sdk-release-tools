@@ -1,11 +1,11 @@
-import {logger} from "../logger/logger";
+import {logger} from "../utils/logger";
 import { execSync } from "child_process";
 
 import fs from "fs";
 import * as path from "path";
 import {getChangedPackageDirectory} from "../utils/git";
-import {generateChangelogAndBumpVersion} from "../changelog-generator/automaticGenerateChangeLogAndBumpVersion";
-import {Changelog} from "../changelog-generator/ChangelogGenerator";
+import {generateChangelogAndBumpVersion} from "../changelogGenerationAndVersionBumpCore/automaticGenerateChangeLogAndBumpVersion";
+import {Changelog} from "../changelogGenerationAndVersionBumpCore/ChangelogGenerator";
 
 const commentJson = require('comment-json');
 const yaml = require('yaml');
