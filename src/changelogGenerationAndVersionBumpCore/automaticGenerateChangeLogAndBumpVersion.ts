@@ -7,7 +7,7 @@ import {
     makeChangesForReleasingTrack2
 } from "./modifyChangelogFileAndBumpVersion";
 import {logger} from "../utils/logger";
-import {getLatestStableVersion, getNewVersion } from "../utils/version";
+import {getLatestStableVersion, getNewVersion, isBetaVersion} from "../utils/version";
 import {isGeneratedCodeStable} from "./isGeneratedCodeStable";
 
 const fs = require('fs');
@@ -29,13 +29,17 @@ export async function generateChangelogAndBumpVersion(packageFolderPath: string)
     const packageName = JSON.parse(fs.readFileSync(path.join(packageFolderPath, 'package.json'), {encoding: 'utf-8'})).name;
     const npm = new NPMScope({ executionFolderPath: packageFolderPath });
     const npmViewResult: NPMViewResult = await npm.view({ packageName });
-    if (npmViewResult.exitCode !== 0) {
-        logger.log(`Package ${packageName} is first release, generating changelogs and setting version for first release...`);
+    const stableVersion = getLatestStableVersion(npmViewResult);
+    if (!stableVersion) {
+        logger.logError(`Invalid latest version ${stableVersion}`);
+        process.exit(1);
+    }
+    if (npmViewResult.exitCode !== 0 || (isBetaVersion(stableVersion) && isStableRelease)) {
+        logger.log(`Package ${packageName} is first${npmViewResult.exitCode !== 0? ' ': ' stable'} release, generating changelogs and setting version for first${npmViewResult.exitCode !== 0? ' ': ' stable'} release...`);
         makeChangesForFirstRelease(packageFolderPath, isStableRelease);
-        logger.log(`Generate changelogs and setting version for first release successfully`);
+        logger.log(`Generate changelogs and setting version for first${npmViewResult.exitCode !== 0? ' ': ' stable'} release successfully`);
     } else {
         logger.log(`Package ${packageName} has been released before, checking whether previous release is track2 sdk...`)
-        const stableVersion = getLatestStableVersion(npmViewResult);
         const usedVersions = npmViewResult['versions'];
         // in our rule, we always compare to stableVersion. But here wo should pay attention to the some stableVersion which contains beta, which means the package has not been GA.
         try {
@@ -45,7 +49,7 @@ export async function generateChangelogAndBumpVersion(packageFolderPath: string)
             await shell.exec('tar -xzf *.tgz');
             await shell.cd(packageFolderPath);
             // only track2 sdk includes sdk-type with value mgmt
-            const sdkType = fs.readFileSync(path.join(packageFolderPath, 'changelog-temp', 'package', 'package.json'), {encoding: 'utf-8'})['sdk-type'];
+            const sdkType = JSON.parse(fs.readFileSync(path.join(packageFolderPath, 'changelog-temp', 'package', 'package.json'), {encoding: 'utf-8'}))['sdk-type'];
             if (sdkType && sdkType === 'mgmt') {
                 logger.log(`Package ${packageName} released before is track2 sdk`);
                 logger.log('Generating changelog by comparing api.md...');

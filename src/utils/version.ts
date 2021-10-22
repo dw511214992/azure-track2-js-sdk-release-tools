@@ -8,7 +8,7 @@ export function getLatestStableVersion(npmViewResult: NPMViewResult) {
     return stableVersion;
 }
 
-function isBetaVersion(stableVersion: string) {
+export function isBetaVersion(stableVersion: string) {
     return stableVersion.includes('beta');
 }
 
@@ -40,24 +40,16 @@ export function bumpPreviewVersion(version: string, usedVersions: string[] | und
     return newVersion;
 }
 
-function stabilizePreviewVersion(version: string): string {
-    return version.replace(/-beta.*/, '');
-}
-
 export function getNewVersion(stableVersion: string | undefined, usedVersions: string[] | undefined, hasBreakingChange, isStableRelease: boolean): string {
     if (!stableVersion) {
         logger.logError(`Invalid stableVersion ${stableVersion}`);
         process.exit(1);
     }
     if (isStableRelease) {
-        if (isBetaVersion(stableVersion)) {
-            return stabilizePreviewVersion(stableVersion);
+        if (hasBreakingChange) {
+            return bumpMajorVersion(stableVersion, usedVersions);
         } else {
-            if (hasBreakingChange) {
-                return bumpMajorVersion(stableVersion, usedVersions);
-            } else {
-                return bumpMinorVersion(stableVersion, usedVersions);
-            }
+            return bumpMinorVersion(stableVersion, usedVersions);
         }
     } else {
         if (isBetaVersion(stableVersion)) {
