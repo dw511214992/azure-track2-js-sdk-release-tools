@@ -13,7 +13,7 @@ import {isGeneratedCodeStable} from "./isGeneratedCodeStable";
 const fs = require('fs');
 const path = require('path');
 
-const extractExportAndGenerateChangelog = async (mdFilePathOld: string, mdFilePathNew: string) => {
+export const extractExportAndGenerateChangelog = async (mdFilePathOld: string, mdFilePathNew: string) => {
     const metaDataOld = await readSourceAndExtractMetaData(mdFilePathOld);
     const metaDataNew = await readSourceAndExtractMetaData(mdFilePathNew);
     const changeLog = changelogGenerator(metaDataOld, metaDataNew);

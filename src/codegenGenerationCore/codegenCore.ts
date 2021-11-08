@@ -23,7 +23,7 @@ export interface OutputPackageInfo {
     result: string;
 }
 
-function changeRushJson(azureSDKForJSRepoRoot: string, packageName: any, relativePackageFolderPath: string) {
+export function changeRushJson(azureSDKForJSRepoRoot: string, packageName: any, relativePackageFolderPath: string, versionPolicyName: string) {
     const rushJson = commentJson.parse(fs.readFileSync(path.join(azureSDKForJSRepoRoot, 'rush.json'), { encoding: 'utf-8' }));
     const projects: any[] = rushJson.projects;
     let exist = false;
@@ -36,8 +36,8 @@ function changeRushJson(azureSDKForJSRepoRoot: string, packageName: any, relativ
     if (!exist) {
         projects.push({
             packageName: packageName,
-            projectFolder: relativePackageFolderPath,
-            versionPolicyName: "management"
+            projectFolder: relativePackageFolderPath.replace(/\\/, '/'),
+            versionPolicyName: versionPolicyName
         });
         fs.writeFileSync(path.join(azureSDKForJSRepoRoot, 'rush.json'), commentJson.stringify(rushJson,undefined, 2), {encoding: 'utf-8'});
     }
@@ -83,10 +83,10 @@ function addArtifact(artifacts: any, name: string, safeName: string) {
     return true;
 }
 
-function modifyOrGenerateCiYaml(azureSDKForJSRepoRoot: string, changedPackageDirectory: string, packageName: string) {
-    const relativeRpFolderPathRegexResult = /sdk\/[^\/]*\//.exec(changedPackageDirectory);
+export function modifyOrGenerateCiYaml(azureSDKForJSRepoRoot: string, changedPackageDirectory: string, packageName: string) {
+    const relativeRpFolderPathRegexResult = /sdk[\/\\][^\/]*[\/\\]/.exec(changedPackageDirectory);
     if (relativeRpFolderPathRegexResult) {
-        const relativeRpFolderPath = relativeRpFolderPathRegexResult[0];
+        let relativeRpFolderPath = relativeRpFolderPathRegexResult[0];
         const rpFolderName = path.basename(relativeRpFolderPath);
         const rpFolderPath = path.join(azureSDKForJSRepoRoot, relativeRpFolderPath);
         const ciYamlPath = path.join(rpFolderPath, 'ci.yml');
@@ -101,6 +101,7 @@ function modifyOrGenerateCiYaml(azureSDKForJSRepoRoot: string, changedPackageDir
                 fs.writeFileSync(ciYamlPath, yaml.stringify(ciYaml), {encoding: 'utf-8'});
             }
         } else {
+            relativeRpFolderPath = relativeRpFolderPath.replace(/\\/, '/');
             const ciYaml = `# NOTE: Please refer to https://aka.ms/azsdk/engsys/ci-yaml before editing this file.
 trigger:
   branches:
@@ -189,7 +190,7 @@ export async function generateSdkAutomatically(azureSDKForJSRepoRoot: string, ab
                 if (packageFolderPath) {
                     const packageJson = JSON.parse(fs.readFileSync(path.join(packageFolderPath, 'package.json'), { encoding: 'utf-8' }));
 
-                    changeRushJson(azureSDKForJSRepoRoot, packageJson.name, changedPackageDirectory);
+                    changeRushJson(azureSDKForJSRepoRoot, packageJson.name, changedPackageDirectory, 'management');
 
                     // This should be deleted when codegen is ready
                     // changePackageJson(azureSDKForJSRepoRoot, packageFolderPath, packageJson, changedPackageDirectory);
