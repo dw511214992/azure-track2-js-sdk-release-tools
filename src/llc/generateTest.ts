@@ -50,7 +50,7 @@ export const environmentSetup: RecorderEnvironmentSetup = {
       return replaced;
     },
   ],
-  [],
+  queryParametersToSkip: [],
 }
 
 /**

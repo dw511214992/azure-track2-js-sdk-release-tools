@@ -128,6 +128,9 @@ export function generatePackageJson(packagePath, packageName, sdkRepo) {
     if (fs.existsSync(path.join(packagePath, 'src', 'paginateHelper.ts'))) {
         content['dependencies']['@azure/core-paging'] = keyVaultAdminPackageJson['dependencies']['@azure/core-paging'];
     }
+    if (fs.existsSync(path.join(packagePath, 'src', 'pollingHelper.ts'))) {
+        content['dependencies']['@azure/core-lro'] = keyVaultAdminPackageJson['dependencies']['@azure/core-lro'];
+    }
     const readme = fs.readFileSync(path.join(packagePath, 'swagger', 'README.md'), {encoding: 'utf-8'});
     const match = /package-version: "*([0-9a-z-.]+)/.exec(readme);
     if (!!match && match.length === 2) {

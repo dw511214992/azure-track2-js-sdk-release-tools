@@ -31,14 +31,15 @@ ${originalChangeLogContent}`;
 }
 
 export async function generateChangelog(packagePath) {
-    const packageJson = JSON.parse(path.join(packagePath, 'package.json'));
+    const packageJson = JSON.parse(fs.readFileSync(path.join(packagePath, 'package.json'), {encoding: 'utf-8'}));
     const packageName = packageJson.name;
     const version = packageJson.version;
     const npm = new NPMScope({executionFolderPath: packagePath});
     const npmViewResult = await npm.view({packageName});
     if (npmViewResult.exitCode !== 0) {
-        logger.log(`${packageName} is first release, generating changelog`);
+        logger.logGreen(`${packageName} is first release, generating changelog`);
         generateChangelogForFirstRelease(packagePath, version);
+        logger.logGreen(`Generate changelog successfully`);
     } else {
         if (process.platform === "win32") {
             const msg = `Please run this tool in linux system because it cannot generate valid changelog in windows system.`;
@@ -66,7 +67,7 @@ export async function generateChangelog(packagePath) {
                     logger.logError('Cannot generate changelog because the codes of local and npm may be the same.');
                 } else {
                     appendChangelog(packagePath, version, changelog);
-                    logger.log('Generate changelogs successfully');
+                    logger.log('Generate changelog successfully');
                 }
             } finally {
                 await shell.exec(`rm -r ${path.join(packagePath, 'changelog-temp')}`);

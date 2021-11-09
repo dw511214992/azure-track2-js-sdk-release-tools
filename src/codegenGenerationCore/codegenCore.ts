@@ -36,7 +36,7 @@ export function changeRushJson(azureSDKForJSRepoRoot: string, packageName: any, 
     if (!exist) {
         projects.push({
             packageName: packageName,
-            projectFolder: relativePackageFolderPath.replace(/\\/, '/'),
+            projectFolder: relativePackageFolderPath.replace(/\\/g, '/'),
             versionPolicyName: versionPolicyName
         });
         fs.writeFileSync(path.join(azureSDKForJSRepoRoot, 'rush.json'), commentJson.stringify(rushJson,undefined, 2), {encoding: 'utf-8'});
@@ -101,7 +101,7 @@ export function modifyOrGenerateCiYaml(azureSDKForJSRepoRoot: string, changedPac
                 fs.writeFileSync(ciYamlPath, yaml.stringify(ciYaml), {encoding: 'utf-8'});
             }
         } else {
-            relativeRpFolderPath = relativeRpFolderPath.replace(/\\/, '/');
+            relativeRpFolderPath = relativeRpFolderPath.replace(/\\/g, '/');
             const ciYaml = `# NOTE: Please refer to https://aka.ms/azsdk/engsys/ci-yaml before editing this file.
 trigger:
   branches:

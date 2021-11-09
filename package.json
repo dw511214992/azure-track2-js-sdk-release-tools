@@ -1,6 +1,6 @@
 {
-  "name": "azure-track2-js-sdk-release-tools",
-  "version": "0.1.31",
+  "name": "llc-js-sdk-release-tools",
+  "version": "0.1.0",
   "description": "",
   "scripts": {
     "start": "node dist/generateChangelogAndBumpVersionCLI.js",
@@ -11,7 +11,8 @@
   "bin": {
     "track2-js-sdk-changelog-tool": "./dist/generateChangelogAndBumpVersionCLI.js",
     "track2-codegen-automation": "./dist/generateCodesInLocalCLI.js",
-    "track2-codegen-automation-for-pipeline": "./dist/generateCodesInPipelineCLI.js"
+    "track2-codegen-automation-for-pipeline": "./dist/generateCodesInPipelineCLI.js",
+    "llc-codegen-automation": "./dist/llcCodegenAutomationCLI.js"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",

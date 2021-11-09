@@ -70,3 +70,21 @@ export function getRelativePackagePath(packagePath) {
         throw `Wrong package path ${packagePath};`;
     }
 }
+
+export async function getRpFromCommand(): Promise<string> {
+    const readline = require('readline');
+
+    function askWhichResourceProvider(query: string) {
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+        });
+
+        return new Promise(resolve => rl.question(query, ans => {
+            rl.close();
+            resolve(ans);
+        }))
+    }
+    const rp = await askWhichResourceProvider("Which resource provider to you want to store your package in sdk folder? Please input it: ");
+    return rp as string;
+}

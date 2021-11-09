@@ -3,7 +3,7 @@ import * as path from "path";
 import {getLatestCodegen} from "./utils";
 import {logger} from "../utils/logger";
 
-export function generateSampleReadmeMd(packageName, packagePath) {
+export async function generateSampleReadmeMd(packageName, packagePath) {
     const sampleReadme = `# Azure Sample Readme for LLC
 
 > see https://aka.ms/autorest
@@ -24,7 +24,7 @@ rest-level-client: true
 add-credentials: true
 credential-scopes: "https://sample/.default"
 use-extension:
-  "@autorest/typescript": "${getLatestCodegen(packagePath)}"
+  "@autorest/typescript": "${await getLatestCodegen(packagePath)}"
 \`\`\`
 `;
     if (!fs.existsSync(path.join(packagePath, 'swagger'))) {

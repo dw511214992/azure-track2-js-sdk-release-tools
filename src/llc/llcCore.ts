@@ -43,13 +43,14 @@ export async function generateCodes(packagePath, packageName, sdkRepo) {
     }
 }
 
-export async function buildGeneratedCodes(packagePath) {
+export async function buildGeneratedCodes(sdkrepo: string, packagePath: string, packageName: string) {
     try {
-        shell.cd(packagePath);
+        shell.cd(sdkrepo);
         logger.logGreen(`rush update`);
         execSync('rush update', {stdio: 'inherit'});
-        logger.logGreen(`rushx build`);
-        execSync('rushx build', {stdio: 'inherit'});
+        logger.logGreen(`rush build -t ${packageName}`);
+        execSync(`rush build -t ${packageName}`, {stdio: 'inherit'});
+        shell.cd(packagePath);
         logger.logGreen(`Generate changelog`);
         await generateChangelog(packagePath);
         logger.logGreen(`rushx pack`);
@@ -58,5 +59,3 @@ export async function buildGeneratedCodes(packagePath) {
         logger.logError(`Build failed: ` + e.message);
     }
 }
-
-exports.buildGeneratedCodes = buildGeneratedCodes;
