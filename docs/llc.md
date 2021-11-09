@@ -65,7 +65,7 @@ rush update
     ```
 
 ### Step 2: Generate Code and Build Generated Code
-Run command:
+Check whether the `package-version` in `README.md` is expected, and then Run command:
 ```shell
 llc-codegen-automation --packgeName=<your package name>
 ```
