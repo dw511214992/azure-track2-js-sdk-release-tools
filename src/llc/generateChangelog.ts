@@ -36,42 +36,39 @@ export async function generateChangelog(packagePath) {
     const version = packageJson.version;
     const npm = new NPMScope({executionFolderPath: packagePath});
     const npmViewResult = await npm.view({packageName});
-    if (npmViewResult.exitCode !== 0) {
+    if (true) { // currently, released package doesn't contain review folder, so we cannot get changelog.
+    // if (npmViewResult.exitCode !== 0) {
         logger.logGreen(`${packageName} is first release, generating changelog`);
         generateChangelogForFirstRelease(packagePath, version);
         logger.logGreen(`Generate changelog successfully`);
     } else {
-        if (process.platform === "win32") {
-            const msg = `Please run this tool in linux system because it cannot generate valid changelog in windows system.`;
-            logger.logError(msg);
-            throw msg;
-        } else {
-            const stableVersion = getLatestStableVersion(npmViewResult);
-            if (!stableVersion) {
-                logger.logError(`Invalid latest version ${stableVersion}`);
-                process.exit(1);
+        const stableVersion = getLatestStableVersion(npmViewResult);
+        if (!stableVersion) {
+            logger.logError(`Invalid latest version ${stableVersion}`);
+            process.exit(1);
+        }
+        logger.log(`Package ${packageName} released is released before`);
+        logger.log('Generating changelog by comparing api.md...');
+        try {
+            await shell.mkdir(path.join(packagePath, 'changelog-temp'));
+            await shell.cd(path.join(packagePath, 'changelog-temp'));
+            await shell.exec(`npm pack ${packageName}@${stableVersion}`);
+            await shell.exec('tar -xzf *.tgz');
+            await shell.cd(packagePath);
+            const tempReviewFolder = path.join(packagePath, 'changelog-temp', 'package', 'review');
+            let apiMdFileNPM = path.join(tempReviewFolder, fs.readdirSync(tempReviewFolder)[0]);
+            let apiMdFileLocal = path.join(packagePath, 'review', fs.readdirSync(path.join(packagePath, 'review'))[0]);
+            const changelog = await extractExportAndGenerateChangelog(apiMdFileNPM, apiMdFileLocal);
+            if (!changelog.hasBreakingChange && !changelog.hasFeature) {
+                logger.logError('Cannot generate changelog because the codes of local and npm may be the same.');
+            } else {
+                appendChangelog(packagePath, version, changelog);
+                logger.log('Generate changelog successfully');
             }
-            logger.log(`Package ${packageName} released is released before`);
-            logger.log('Generating changelog by comparing api.md...');
-            try {
-                await shell.mkdir(path.join(packagePath, 'changelog-temp'));
-                await shell.cd(path.join(packagePath, 'changelog-temp'));
-                await shell.exec(`npm pack ${packageName}@${stableVersion}`);
-                await shell.exec('tar -xzf *.tgz');
-                await shell.cd(packagePath);
-                const tempReviewFolder = path.join(packagePath, 'changelog-temp', 'package', 'review');
-                let apiMdFileNPM = path.join(tempReviewFolder, fs.readdirSync(tempReviewFolder)[0]);
-                let apiMdFileLocal = path.join(packagePath, 'review', fs.readdirSync(path.join(packagePath, 'review'))[0]);
-                const changelog = await extractExportAndGenerateChangelog(apiMdFileNPM, apiMdFileLocal);
-                if (!changelog.hasBreakingChange && !changelog.hasFeature) {
-                    logger.logError('Cannot generate changelog because the codes of local and npm may be the same.');
-                } else {
-                    appendChangelog(packagePath, version, changelog);
-                    logger.log('Generate changelog successfully');
-                }
-            } finally {
-                await shell.exec(`rm -r ${path.join(packagePath, 'changelog-temp')}`);
-            }
+        } catch (e) {
+          logger.logError(`Generate changelog failed: ${e.message}`);
+        } finally {
+            fs.rmSync(path.join(packagePath, 'changelog-temp'), { recursive: true, force: true });
         }
     }
 }

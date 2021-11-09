@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
+import {logger} from "../utils/logger";
 
 function generateSampleDev(packagePath) {
     const content = `// Copyright (c) Microsoft Corporation.
@@ -37,6 +38,8 @@ AZURE_TENANT_ID= `;
 }
 
 export function generateSample(packagePath) {
+    logger.logGreen(`Remove existing sample and generate a sample one`);
+    fs.rmSync(path.join(packagePath, 'samples-dev'), { recursive: true, force: true })
     generateSampleDev(packagePath);
     generateSampleEnv(packagePath);
     if (!fs.existsSync(path.join(packagePath, 'samples'))) {

@@ -126,7 +126,18 @@ export function generatePackageJson(packagePath, packageName, sdkRepo) {
     };
     const keyVaultAdminPackageJson = JSON.parse(fs.readFileSync(path.join(sdkRepo, 'sdk', 'keyvault', 'keyvault-admin', 'package.json'), {encoding: 'utf-8'}));
     if (fs.existsSync(path.join(packagePath, 'src', 'paginateHelper.ts'))) {
-        content['dependencies']['@azure/core-paging'] = keyVaultAdminPackageJson['dependencies']['@azure/core-paging'];
+        const paginateHelper = fs.readFileSync(path.join(packagePath, 'src', 'paginateHelper.ts'));
+        if (paginateHelper.includes('@azure/core-paging')) {
+            content['dependencies']['@azure/core-paging'] = keyVaultAdminPackageJson['dependencies']['@azure/core-paging'];
+        }
+        if (paginateHelper.includes('@azure-rest/core-client-paging')) {
+            if (packageName !== '@azure-rest/agrifood-farming') {
+                const agrifoodPackageJson = JSON.parse(fs.readFileSync(path.join(sdkRepo, 'sdk', 'agrifood', 'agrifood-farming-rest', 'package.json'), {encoding: 'utf-8'}));
+                content['dependencies']['@azure-rest/core-client-paging'] = agrifoodPackageJson['dependencies']['@azure-rest/core-client-paging'];
+            } else {
+                content['dependencies']['@azure-rest/core-client-paging'] = '1.0.0-beta.1';
+            }
+        }
     }
     if (fs.existsSync(path.join(packagePath, 'src', 'pollingHelper.ts'))) {
         content['dependencies']['@azure/core-lro'] = keyVaultAdminPackageJson['dependencies']['@azure/core-lro'];

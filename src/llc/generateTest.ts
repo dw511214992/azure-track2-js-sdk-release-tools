@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
+import {logger} from "../utils/logger";
 
 function generateEnvFile(packagePath) {
     const content = `// Copyright (c) Microsoft Corporation.
@@ -91,6 +92,8 @@ describe("Sample test", () => {
 }
 
 export function generateTest(packagePath) {
+    logger.logGreen(`Remove existing test and generate a sample one`);
+    fs.rmSync(path.join(packagePath, 'test'), { recursive: true, force: true });
     if (!fs.existsSync(path.join(packagePath, 'test'))) {
         fs.mkdirSync(path.join(packagePath, 'test'));
     }
