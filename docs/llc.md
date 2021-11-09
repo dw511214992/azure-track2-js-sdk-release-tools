@@ -13,9 +13,10 @@ npm install -g draft-js-sdk-release-tools --force
 ### Prerequisites
 1. Install Any of the [LTS versions of Node.js](https://nodejs.org/en/about/releases/).
 2. Install autorest: `npm install -g autorest`.
-3. use [Git](https://git-scm.com/) to clone [azure-sdk-for-js](https://github.com/Azure/azure-sdk-for-js) or [azure-sdk-for-js-pr](https://github.com/Azure/azure-sdk-for-js-pr). Then go to the root of sdk repository. For example:
+3. use [Git](https://git-scm.com/) to clone [azure-sdk-for-js](https://github.com/Azure/azure-sdk-for-js) or [azure-sdk-for-js-pr](https://github.com/Azure/azure-sdk-for-js-pr). Then go to the root of sdk repository and run `rush update`. For example:
 ```shell
 cd azure-sdk-for-js
+rush update
 ```
 
 ### Step 1: Customize README.md
