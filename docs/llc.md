@@ -89,8 +89,8 @@ Also, you need to know what the tool does:
 8. Generate LICENSE
 9. Generate test (a sample test)
 10. Generate sample (sample-dev and sample.env, will include more in the future)
-11. add/update ci.yml
-12. update rush.json
+11. Add/update ci.yml
+12. Update rush.json
 #### Build Codes:
 1. Run `rush update`
 2. Run `rush build -t <your package name>`
