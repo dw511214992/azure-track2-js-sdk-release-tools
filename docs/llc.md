@@ -21,7 +21,7 @@ rush update
 ```
 
 ### Step 1: Customize README.md
-*If your package has been released before and the package folder contains `swagger/README.md`, please skip this step.*
+*If your package has been released before and the package folder contains `swagger/README.md`, please skip this step and go to Step 2 directly.*
 
 1. Run command:
     ```shell
