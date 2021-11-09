@@ -64,7 +64,7 @@ rush update
     Have you finished customizing D:\projects\azure-sdk-for-js\sdk\purview\purview-account-rest\swagger\README.md ? If yes, please input yes: yes
     ```
 
-### Step2: Generate Code and Build Generated Code
+### Step 2: Generate Code and Build Generated Code
 Run command:
 ```shell
 llc-codegen-automation --packgeName=<your package name>
