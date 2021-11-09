@@ -33,7 +33,7 @@ cd azure-sdk-for-js
     ```
    *Note: the resource provider name is the folder name under [sdk](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk). If the resource provider name you provided is not under [sdk](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk), we will create a new one for you.*
 3. Then you can replace the value in README.md by yours. (The path of README.md file will show in terminal.). For example:
-    ```
+    ~~~
     # Azure Purview Catalog TypeScript Protocol Layer
     
     > see https://aka.ms/autorest
@@ -55,7 +55,7 @@ cd azure-sdk-for-js
     use-extension:
       "@autorest/typescript": "6.0.0-beta.14"
     ``` 
-    ```
+    ~~~
 
 4. When you have finished replacing the value in README.md, please input `yes` in command line:
     ```shell
