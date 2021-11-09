@@ -96,7 +96,7 @@ export async function getRpFromCommand(): Promise<string> {
             resolve(ans);
         }))
     }
-    const rp = await askWhichResourceProvider("Which resource provider to you want to store your package in sdk folder? Please input it: ");
+    const rp = await askWhichResourceProvider("Which resource provider do you want to store your package in sdk folder? Please input it: ");
     return rp as string;
 }
 

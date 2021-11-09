@@ -29,7 +29,7 @@ cd azure-sdk-for-js
 
 2. If your package is first release, the tool will ask you which resource provider your package belongs, and you can input it directly. For example:
     ```shell
-    Which resource provider to you want to store your package in sdk folder? Please input it: purview
+    Which resource provider do you want to store your package in sdk folder? Please input it: purview
     ```
    *Note: the resource provider name is the folder name under [sdk](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk). If the resource provider name you provided is not under [sdk](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk), we will create a new one for you.*
 3. Then you can replace the value in README.md by yours. (The path of README.md file will show in terminal.). For example:
