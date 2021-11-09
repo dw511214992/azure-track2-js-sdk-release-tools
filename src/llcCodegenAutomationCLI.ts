@@ -17,7 +17,6 @@ async function autoGenerate(packageName: string) {
         let packagePath = findPackageInRepo(packageName, sdkRepo);
         if (!packagePath) {
             logger.logGreen(`${packageName} is first generated, creating a sample swagger/README.md for quickstart`);
-            logger.logGreen(`Please input the resource provider folder:`)
             const rp = await getRpFromCommand();
             if (!fs.existsSync(path.join(sdkRepo, 'sdk', rp))) {
                 fs.mkdirSync(path.join(sdkRepo, 'sdk', rp));
@@ -35,6 +34,10 @@ async function autoGenerate(packageName: string) {
         }
         await generateCodes(packagePath, packageName, sdkRepo);
         await buildGeneratedCodes(sdkRepo, packagePath, packageName);
+        logger.logGreen(``);
+        logger.logGreen(`----------------------------------------------------------------`);
+        logger.logGreen(``);
+        logger.logGreen(`LLC code is generated and build successfully, please find it in ${packagePath}`);
     }
 }
 

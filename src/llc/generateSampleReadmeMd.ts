@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import {getLatestCodegen} from "./utils";
+import {checkIfCompleteReadmeMd, getLatestCodegen} from "./utils";
 import {logger} from "../utils/logger";
 
 export async function generateSampleReadmeMd(packageName, packagePath) {
@@ -31,6 +31,12 @@ use-extension:
         fs.mkdirSync(path.join(packagePath, 'swagger'));
     }
     fs.writeFileSync(path.join(packagePath, 'swagger', 'README.md'), sampleReadme, {encoding: 'utf-8'});
-    logger.logGreen(`${path.join(packagePath, 'swagger', 'README.md')} is generated, please replace the sample value by yours.`);
-    process.exit(0);
+    logger.log('');
+    logger.logGreen('-------------------------------------------------------------');
+    logger.logGreen(`${path.join(packagePath, 'swagger', 'README.md')} is generated, please replace the value of title, description, input-file, package-version, credential-scopes into your own service's.`);
+    logger.log('');
+    logger.logGreen(`You can refer to https://github.com/Azure/azure-sdk-for-js/blob/main/sdk/purview/purview-scanning-rest/swagger/README.md`)
+    logger.logGreen('-------------------------------------------------------------');
+    logger.log('');
+    await checkIfCompleteReadmeMd(path.join(packagePath, 'swagger', 'README.md'));
 }

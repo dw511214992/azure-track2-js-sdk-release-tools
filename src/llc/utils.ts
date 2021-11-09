@@ -3,6 +3,7 @@ import * as path from "path";
 import {logger} from "../utils/logger";
 import {NPMScope} from "@ts-common/azure-js-dev-tools";
 import {getLatestStableVersion} from "../utils/version";
+const readline = require('readline');
 
 export function validPackageName(packageName) {
     const match = /@azure-rest\/[a-zA-Z-]+/.exec(packageName);
@@ -71,9 +72,19 @@ export function getRelativePackagePath(packagePath) {
     }
 }
 
-export async function getRpFromCommand(): Promise<string> {
-    const readline = require('readline');
+function askWhichResourceProvider(query: string) {
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+    });
 
+    return new Promise(resolve => rl.question(query, ans => {
+        rl.close();
+        resolve(ans);
+    }))
+}
+
+export async function getRpFromCommand(): Promise<string> {
     function askWhichResourceProvider(query: string) {
         const rl = readline.createInterface({
             input: process.stdin,
@@ -87,4 +98,13 @@ export async function getRpFromCommand(): Promise<string> {
     }
     const rp = await askWhichResourceProvider("Which resource provider to you want to store your package in sdk folder? Please input it: ");
     return rp as string;
+}
+
+export async function checkIfCompleteReadmeMd(readmePath: string): Promise<void> {
+    while (true) {
+        const answer = await askWhichResourceProvider(`Have you finished customizing ${readmePath} ? If yes, please input yes: `);
+        if ("yes" === (answer as string)) {
+            return;
+        }
+    }
 }
