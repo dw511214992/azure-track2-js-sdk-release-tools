@@ -1,5 +1,5 @@
-# Azure LLC JS SDK Tool
-Azure LLC JS SDK Tool can help you get llc codes by one command in few minutes.
+# Azure JS LLC Tool
+Azure JS LLC Tool can help you get llc codes by one command in few minutes.
 
 *Note: Currently, this tools only supports generating dataplane sdk, and only can run in powershell/bash.*
 
