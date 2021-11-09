@@ -65,7 +65,7 @@ cd azure-sdk-for-js
 ### Step2: Generate Code and Build Generated Code
 Run command:
 ```shell
-llc-codegen-automation --pacakgeName=<your package name>
+llc-codegen-automation --packgeName=<your package name>
 ```
 Now you can get LLC codes.
 
