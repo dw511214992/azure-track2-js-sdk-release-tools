@@ -19,60 +19,40 @@ npm install -g draft-js-sdk-release-tools --force
 cd azure-sdk-for-js
 rush update
 ```
+### Steps
 
-### Step 1: Customize README.md
-*If your package has been released before and the package folder contains `swagger/README.md`, please skip this step and go to Step 2 directly.*
-
-1. Run command:
+##### Step 1. Run command:
     ```shell
-    llc-codegen-automation --packageName=<your package name>
+    llc-codegen --package-name=<your package name>
     ```
-    *Note: please replace with your packageName, for example: `llc-codegen-automation --packageName=@azure-rest/purview-account`*
-
-2. If your package is first release, the tool will ask you which resource provider your package belongs, and you can input it directly. For example:
+    *Note*:
+   - *Please replace with your package name, for example: `llc-codegen --package-name=@azure-rest/purview-account`. If you don't provide it, the tool will ask you to input it interactively.*
+   - *You also can use command `llc-codegen --readme=<the path of swagger/README.md>` to generate codes if `swagger/README.md` exists. Then it will skip Step 2 and go to Step 3 directly.*
+##### Step 2. Generate swagger/README.md
+   If your package is first release or doesn't contain `swagger/readme.md`, the tool will ask you to input some necessary information. If not, please skip this step.
+   
+   For example:
     ```shell
     Which resource provider do you want to store your package in sdk folder? Please input it: purview
     ```
-   *Note: the resource provider name is the folder name under [sdk](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk). If the resource provider name you provided is not under [sdk](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk), we will create a new one for you.*
-3. Then you can replace the value in README.md by yours. (The path of README.md file will show in terminal.). For example:
-    ~~~
-    # Azure Purview Catalog TypeScript Protocol Layer
-    
-    > see https://aka.ms/autorest
-    ## Configuration
-    
-    ```yaml
-    package-name: "@azure-rest/purview-account"
-    title: PurviewAccount
-    description: Purview Account Client
-    generate-metadata: false
-    license-header: MICROSOFT_MIT_NO_VERSION
-    output-folder: ../
-    source-code-folder-path: ./src
-    input-file: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/specification/purview/data-plane/Azure.Analytics.Purview.Account/preview/2019-11-01-preview/account.json
-    package-version: 1.0.0-beta.1
-    rest-level-client: true
-    add-credentials: true
-    credential-scopes: "https://purview.azure.net/.default"
-    use-extension:
-      "@autorest/typescript": "6.0.0-beta.14"
-    ``` 
-    ~~~
+   You need to provide following information. You can refer to [README.md](https://github.com/Azure/azure-sdk-for-js/blob/main/sdk/purview/purview-catalog-rest/swagger/README.md) as an example.
 
-4. When you have finished replacing the value in README.md, please input `yes` in command line:
-    ```shell
-    Have you finished customizing D:\projects\azure-sdk-for-js\sdk\purview\purview-account-rest\swagger\README.md ? If yes, please input yes: yes
-    ```
+   | parameter | description |
+   | ----- | ---- |
+   | resource-provider | The folder name under [sdk](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk). If the resource provider name you provided is not under [sdk](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk), we will create a new one for you. |
+   | package-name | The package name of the sdk, which should be in format @azure-rest/xxxxx |
+   | title | The title of the sdk. |
+   | description | The description of the sdk. |
+   | input-file | The swagger files to generate sdk. If you have multi input files, please use semicolons to separate. |
+   | package-version | The sdk version you want to generate. |
+   | credential-scopes | The credential scopes of your service. |
 
-### Step 2: Generate Code and Build Generated Code
-Check whether the `package-version` in `README.md` is expected, and then Run command:
-```shell
-llc-codegen-automation --packgeName=<your package name>
-```
-Now you can get LLC codes.
+   You also can provide the information when running command `llc-codegen`, such as `llc-codegen --package-name=<your package name> --title=<your title> --description=<your description>`.
 
-1. If you want to write test, please start from sample test from `test` folder.
-2. If you want to write sample, please start from `sample.env`, `sample-dev` folder and `samples` folder.
+##### Step 3. The tool will generate codes and build generated codes automatically. Finally, you can get LLC codes.
+
+   - If you want to write test, please start from sample test from `test` folder.
+   - If you want to write sample, please start from `sample.env`, `sample-dev` folder and `samples` folder.
 
 Please refer to [template](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/template/template) as a good start.
 

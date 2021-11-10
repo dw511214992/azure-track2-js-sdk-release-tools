@@ -31,6 +31,10 @@ ${originalChangeLogContent}`;
 }
 
 export async function generateChangelog(packagePath) {
+    if (fs.existsSync(path.join(packagePath, 'CHANGELOG.md'))) {
+        logger.logWarn(`Changelog already exists, and we won't generate changelog util this tool is ready.`)
+        return;
+    }
     const packageJson = JSON.parse(fs.readFileSync(path.join(packagePath, 'package.json'), {encoding: 'utf-8'}));
     const packageName = packageJson.name;
     const version = packageJson.version;

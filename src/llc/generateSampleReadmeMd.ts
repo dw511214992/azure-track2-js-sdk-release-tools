@@ -1,9 +1,22 @@
 import * as fs from "fs";
 import * as path from "path";
-import {checkIfCompleteReadmeMd, getLatestCodegen} from "./utils";
+import { getInputFromCommand, getLatestCodegen} from "./utils";
 import {logger} from "../utils/logger";
 
-export async function generateSampleReadmeMd(packageName, packagePath) {
+export async function generateSampleReadmeMd(packageName, packagePath, options: any) {
+    const title = options.title? options.title : await getInputFromCommand('title');
+    const description = options.description? options.description : await getInputFromCommand('description');
+    let inputFile = options['input-file']? options['input-file'] : await getInputFromCommand('input-file');
+    if (inputFile.includes(';')) {
+        const inputFileArray = inputFile.split(';');
+        inputFile = '';
+        for (const i of inputFileArray) {
+            inputFile = inputFile + '\n  -' + i;
+        }
+    }
+    const packageVersion = options['package-version']? options['package-version'] : await getInputFromCommand('package-version');
+    const credentialScopes = options['credential-scopes']? options['credential-scopes'] : await getInputFromCommand('credential-scopes');
+
     const sampleReadme = `# Azure Sample Readme for LLC
 
 > see https://aka.ms/autorest
@@ -12,17 +25,17 @@ export async function generateSampleReadmeMd(packageName, packagePath) {
 
 \`\`\`yaml
 package-name: "${packageName}"
-title: Sample
-description: Sample Client
+title: ${title}
+description: ${description}
 generate-metadata: false
 license-header: MICROSOFT_MIT_NO_VERSION
 output-folder: ../
 source-code-folder-path: ./src
-input-file: sample.json
-package-version: 1.0.0-beta.1
+input-file: ${inputFile}
+package-version: ${packageVersion}
 rest-level-client: true
 add-credentials: true
-credential-scopes: "https://sample/.default"
+credential-scopes: "${credentialScopes}"
 use-extension:
   "@autorest/typescript": "${await getLatestCodegen(packagePath)}"
 \`\`\`
@@ -38,5 +51,4 @@ use-extension:
     logger.logGreen(`You can refer to https://github.com/Azure/azure-sdk-for-js/blob/main/sdk/purview/purview-scanning-rest/swagger/README.md`)
     logger.logGreen('-------------------------------------------------------------');
     logger.log('');
-    await checkIfCompleteReadmeMd(path.join(packagePath, 'swagger', 'README.md'));
 }

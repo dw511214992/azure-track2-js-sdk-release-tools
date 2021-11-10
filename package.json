@@ -1,6 +1,6 @@
 {
   "name": "draft-js-sdk-release-tools",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "scripts": {
     "start": "node dist/generateChangelogAndBumpVersionCLI.js",
@@ -12,7 +12,7 @@
     "track2-js-sdk-changelog-tool": "./dist/generateChangelogAndBumpVersionCLI.js",
     "track2-codegen-automation": "./dist/generateCodesInLocalCLI.js",
     "track2-codegen-automation-for-pipeline": "./dist/generateCodesInPipelineCLI.js",
-    "llc-codegen-automation": "./dist/llcCodegenAutomationCLI.js"
+    "llc-codegen": "./dist/llcCodegenAutomationCLI.js"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
