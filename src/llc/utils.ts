@@ -78,7 +78,7 @@ export function getPackagePathFromReadmePath(readmePath) {
         process.exit(1);
     } else {
         const absolutePath = path.resolve(readmePath);
-        const match = /.*sdk[\/\\]+[a-zA-z0-9-]+[\/\\]+[a-zA-z0-9-]+/.exec(absolutePath);
+        const match = /.*sdk[\/\\]+[a-zA-Z0-9-]+[\/\\]+[a-zA-Z0-9-]+/.exec(absolutePath);
         if (!match || match.length !== 1) {
             logger.logError(`Invalid README.md file path: ${readmePath}`);
             process.exit(1);
