@@ -22,32 +22,34 @@ rush update
 ### Steps
 
 ##### Step 1. Run command:
-    ```shell
-    llc-codegen --package-name=<your package name>
-    ```
-    *Note*:
+```
+llc-codegen --package-name=<your package name>
+```
+*Note*:
    - *Please replace with your package name, for example: `llc-codegen --package-name=@azure-rest/purview-account`. If you don't provide it, the tool will ask you to input it interactively.*
    - *You also can use command `llc-codegen --readme=<the path of swagger/README.md>` to generate codes if `swagger/README.md` exists. Then it will skip Step 2 and go to Step 3 directly.*
 ##### Step 2. Generate swagger/README.md
-   If your package is first release or doesn't contain `swagger/readme.md`, the tool will ask you to input some necessary information. If not, please skip this step.
+If your package is first release or doesn't contain `swagger/readme.md`, the tool will ask you to input some necessary information. If not, please skip this step.
    
-   For example:
-    ```shell
-    Which resource provider do you want to store your package in sdk folder? Please input it: purview
-    ```
-   You need to provide following information. You can refer to [README.md](https://github.com/Azure/azure-sdk-for-js/blob/main/sdk/purview/purview-catalog-rest/swagger/README.md) as an example.
+For example:
 
-   | parameter | description |
-   | ----- | ---- |
-   | resource-provider | The folder name under [sdk](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk). If the resource provider name you provided is not under [sdk](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk), we will create a new one for you. |
-   | package-name | The package name of the sdk, which should be in format @azure-rest/xxxxx |
-   | title | The title of the sdk. |
-   | description | The description of the sdk. |
-   | input-file | The swagger files to generate sdk. If you have multi input files, please use semicolons to separate. |
-   | package-version | The sdk version you want to generate. |
-   | credential-scopes | The credential scopes of your service. |
+```
+Which resource provider do you want to store your package in sdk folder? Please input it: purview
+```
 
-   You also can provide the information when running command `llc-codegen`, such as `llc-codegen --package-name=<your package name> --title=<your title> --description=<your description>`.
+You need to provide following information. You can refer to [README.md](https://github.com/Azure/azure-sdk-for-js/blob/main/sdk/purview/purview-catalog-rest/swagger/README.md) as an example.
+
+| parameter | description |
+| ----- | ---- |
+| resource-provider | The folder name under [sdk](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk). If the resource provider name you provided is not under [sdk](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk), we will create a new one for you. |
+| package-name | The package name of the sdk, which should be in format @azure-rest/xxxxx |
+| title | The title of the sdk. |
+| description | The description of the sdk. |
+| input-file | The swagger files to generate sdk. If you have multi input files, please use semicolons to separate. |
+| package-version | The sdk version you want to generate. |
+| credential-scopes | The credential scopes of your service. |
+
+You also can provide the information when running command `llc-codegen`, such as `llc-codegen --package-name=<your package name> --title=<your title> --description=<your description>`.
 
 ##### Step 3. The tool will generate codes and build generated codes automatically. Finally, you can get LLC codes.
 
