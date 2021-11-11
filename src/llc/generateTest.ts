@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import {logger} from "../utils/logger";
+import {createFolderIfNotExist} from "./utils";
 
 function generateEnvFile(packagePath) {
     const content = `// Copyright (c) Microsoft Corporation.
@@ -92,17 +93,14 @@ describe("Sample test", () => {
 }
 
 export function generateTest(packagePath) {
-    logger.logGreen(`Remove existing test and generate a sample one`);
-    fs.rmSync(path.join(packagePath, 'test'), { recursive: true, force: true });
-    if (!fs.existsSync(path.join(packagePath, 'test'))) {
-        fs.mkdirSync(path.join(packagePath, 'test'));
+    if (fs.existsSync(path.join(packagePath, 'test'))) {
+        logger.logGreen(`test folder already exists, and we don't generate sample test.`)
+        return;
     }
-    if (!fs.existsSync(path.join(packagePath, 'test', 'public'))) {
-        fs.mkdirSync(path.join(packagePath, 'test', 'public'));
-    }
-    if (!fs.existsSync(path.join(packagePath, 'test', 'public', 'utils'))) {
-        fs.mkdirSync(path.join(packagePath, 'test', 'public', 'utils'));
-    }
+    logger.logGreen(`Generating sample test`);
+    createFolderIfNotExist(path.join(packagePath, 'test'));
+    createFolderIfNotExist(path.join(packagePath, 'test', 'public'));
+    createFolderIfNotExist(path.join(packagePath, 'test', 'public', 'utils'));
     generateSpecFile(packagePath);
     generateEnvFile(packagePath);
     generateEnvBrowserFile(packagePath);

@@ -28,6 +28,9 @@ async function autoGenerate(options: any) {
     } else {
         packageName = options['package-name'];
         if (!packageName || !validPackageName(packageName)) {
+            if (!!packageName && !validPackageName(packageName)) {
+                logger.logWarn(`Your package-name ${packageName} is invalid, it should be in format @azure-rest/xxxxx.`)
+            }
             packageName = await getPackageNameFromCommand();
         }
         packagePath = findPackageInRepo(packageName, sdkRepo);

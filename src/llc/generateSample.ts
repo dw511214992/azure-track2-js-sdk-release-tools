@@ -3,6 +3,10 @@ import * as path from "path";
 import {logger} from "../utils/logger";
 
 function generateSampleDev(packagePath) {
+    if (fs.existsSync(path.join(packagePath, 'samples-dev'))) {
+        logger.logGreen(`Folder samples-dev already exists, we don't generate it.`)
+        return;
+    }
     const content = `// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
@@ -27,6 +31,10 @@ main().catch(console.error);`;
 }
 
 function generateSampleEnv(packagePath) {
+    if (fs.existsSync(path.join(packagePath, 'sample.env'))) {
+        logger.logGreen(`File samples.env already exists, we don't generate it.`)
+        return;
+    }
     const content = `# Purview Scanning resource endpoint
 ENDPOINT=
 
@@ -38,8 +46,7 @@ AZURE_TENANT_ID= `;
 }
 
 export function generateSample(packagePath) {
-    logger.logGreen(`Remove existing sample and generate a sample one`);
-    fs.rmSync(path.join(packagePath, 'samples-dev'), { recursive: true, force: true })
+    logger.logGreen(`Generating sample...`);
     generateSampleDev(packagePath);
     generateSampleEnv(packagePath);
     if (!fs.existsSync(path.join(packagePath, 'samples'))) {

@@ -3,11 +3,27 @@ import * as path from "path";
 import {getPackageFolderName, getRelativePackagePath} from "./utils";
 
 export function generatePackageJson(packagePath, packageName, sdkRepo) {
+    let description = 'Sample description.';
+    let metadata = {
+        "constantPaths": [
+            {
+                "path": "swagger/README.md",
+                "prefix": "package-version"
+            }
+        ]
+    };
+    let sampleConfiguration = {};
+    if (fs.existsSync(path.join(packagePath, 'package.json'))) {
+        const originalContent = JSON.parse(fs.readFileSync(path.join(packagePath, 'package.json'), {encoding: 'utf-8'}));
+        if (!!originalContent['description']) description = originalContent['description'];
+        if (!!originalContent['//metadata']) metadata = originalContent['//metadata'];
+        if (!!originalContent['//sampleConfiguration']) sampleConfiguration = originalContent['//sampleConfiguration'];
+    }
     const content = {
         "name": packageName,
         "sdk-type": "client",
         "author": "Microsoft Corporation",
-        "description": "Sample description.",
+        "description": description,
         "version": "1.0.0-beta.1",
         "keywords": [
             "node",
@@ -21,7 +37,7 @@ export function generatePackageJson(packagePath, packageName, sdkRepo) {
         "main": "./dist/index.js",
         "module": "./dist-esm/src/index.js",
         "types": `./types/${getPackageFolderName(packageName)}.d.ts`,
-        "homepage": `https://github.com/Azure/azure-sdk-for-js/tree/main/${getRelativePackagePath}/README.md`,
+        "homepage": `https://github.com/Azure/azure-sdk-for-js/tree/main/${getRelativePackagePath(packagePath)}/README.md`,
         "repository": "github:Azure/azure-sdk-for-js",
         "bugs": {
             "url": "https://github.com/Azure/azure-sdk-for-js/issues"
@@ -36,15 +52,8 @@ export function generatePackageJson(packagePath, packageName, sdkRepo) {
         "engines": {
             "node": ">=12.0.0"
         },
-        "//metadata": {
-            "constantPaths": [
-                {
-                    "path": "swagger/README.md",
-                    "prefix": "package-version"
-                }
-            ]
-        },
-        "//sampleConfiguration": {},
+        "//metadata": metadata,
+        "//sampleConfiguration": sampleConfiguration,
         "browser": {
             "./dist-esm/test/public/utils/env.js": "./dist-esm/test/public/utils/env.browser.js"
         },
@@ -57,7 +66,7 @@ export function generatePackageJson(packagePath, packageName, sdkRepo) {
             "build": "npm run clean && tsc -p . && rollup -c 2>&1 && mkdirp ./review && api-extractor run --local",
             "build:debug": "tsc -p . && rollup -c 2>&1 && api-extractor run --local",
             "check-format": "prettier --list-different --config ../../../.prettierrc.json --ignore-path ../../../.prettierignore \"src/**/*.ts\" \"test/**/*.ts\" \"samples-dev/**/*.ts\" \"*.{js,json}\"",
-            "clean": "rimraf dist dist-browser dist-esm test-dist temp types *.tgz *.log",
+            "clean": "rimraf dist dist-browser dist-esm test-dist dist-test temp types *.tgz *.log",
             "execute:samples": "dev-tool samples run samples-dev",
             "extract-api": "rimraf review && mkdirp ./review && api-extractor run --local",
             "format": "prettier --write --config ../../../.prettierrc.json --ignore-path ../../../.prettierignore \"src/**/*.ts\" \"test/**/*.ts\" \"samples-dev/**/*.ts\" \"*.{js,json}\"",

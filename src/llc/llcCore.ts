@@ -12,6 +12,7 @@ import {generateSample} from "./generateSample";
 import {changeRushJson, modifyOrGenerateCiYaml} from "../codegenGenerationCore/codegenCore";
 import {getRelativePackagePath} from "./utils";
 import {generateChangelog} from "./generateChangelog";
+import {hackByModifyConfig, ModifyModel} from "./hackByModifyConfig";
 
 const shell = require('shelljs')
 
@@ -48,14 +49,18 @@ export async function buildGeneratedCodes(sdkrepo: string, packagePath: string, 
         shell.cd(sdkrepo);
         logger.logGreen(`rush update`);
         execSync('rush update', {stdio: 'inherit'});
-        logger.logGreen(`rush build -t ${packageName}`);
+        logger.logGreen(`rush build -t ${packageName}: Build generated codes, except test and sample, which may be written manually`);
+        // To build generated codes except test and sample, we need to change tsconfig.json.
+        hackByModifyConfig(packagePath, ModifyModel.Change);
         execSync(`rush build -t ${packageName}`, {stdio: 'inherit'});
+        hackByModifyConfig(packagePath, ModifyModel.Revert);
         shell.cd(packagePath);
         logger.logGreen(`Generate changelog`);
         await generateChangelog(packagePath);
-        logger.logGreen(`rushx pack`);
-        execSync('rushx pack', {stdio: 'inherit'});
+        logger.logGreen(`Clean compiled outputs`);
+        execSync('rushx clean', {stdio: 'inherit'});
     } catch (e) {
         logger.logError(`Build failed: ` + e.message);
+        process.exit(1);
     }
 }

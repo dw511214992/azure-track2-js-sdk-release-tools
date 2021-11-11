@@ -78,5 +78,5 @@ Also, you need to know what the tool does:
 #### Build Codes:
 1. Run `rush update`
 2. Run `rush build -t <your package name>`
-3. Generate changelog(Because released package doesn't include review folder, so we generate an initial release changelog.)
-4. Run `rushx pack` in package folder
+3. Generate changelog(Because released package doesn't include review folder, so we generate an initial release changelog if there is no existing CHANGELOG.md.)
+4. Clean compiled codes
