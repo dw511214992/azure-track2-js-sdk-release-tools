@@ -1,6 +1,6 @@
 {
   "name": "draft-js-sdk-release-tools",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "",
   "scripts": {
     "start": "node dist/generateChangelogAndBumpVersionCLI.js",
