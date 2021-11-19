@@ -17,7 +17,7 @@ export async function generateSampleReadmeMd(packageName, packagePath, options: 
     const packageVersion = options['package-version']? options['package-version'] : await getInputFromCommand('package-version');
     const credentialScopes = options['credential-scopes']? options['credential-scopes'] : await getInputFromCommand('credential-scopes');
 
-    const sampleReadme = `# Azure Sample Readme for LLC
+    const sampleReadme = `# Azure Sample Readme for RLC
 
 > see https://aka.ms/autorest
 

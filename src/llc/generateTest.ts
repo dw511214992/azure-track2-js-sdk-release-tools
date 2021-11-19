@@ -73,6 +73,7 @@ import { Recorder } from "@azure-tools/test-recorder";
 
 import { createRecorder } from "./utils/recordedClient";
 import { Context } from "mocha";
+import { assert } from "chai";
 
 describe("Sample test", () => {
   let recorder: Recorder;
@@ -86,7 +87,7 @@ describe("Sample test", () => {
   });
 
   it("sample test", async function() {
-    console.log("Hi, I'm a test!");
+    assert.equal(1, 1);
   });
 });`;
     fs.writeFileSync(path.join(packagePath, 'test', 'public', 'sample.spec.ts'), content, {encoding: 'utf-8'});

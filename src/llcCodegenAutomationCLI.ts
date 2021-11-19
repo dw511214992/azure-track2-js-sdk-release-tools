@@ -58,7 +58,7 @@ async function autoGenerate(options: any) {
     logger.logGreen(``);
     logger.logGreen(`----------------------------------------------------------------`);
     logger.logGreen(``);
-    logger.logGreen(`LLC code is generated and build successfully, please find it in ${packagePath}`);
+    logger.logGreen(`RLC code is generated and build successfully, please find it in ${packagePath}`);
 }
 
 const optionDefinitions = [

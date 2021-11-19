@@ -1,5 +1,5 @@
-# Azure JS LLC Tool
-Azure JS LLC Tool can help you get llc codes by one command in few minutes.
+# Azure JS RLC Tool
+Azure JS RLC Tool can help you get llc codes by one command in few minutes.
 
 *Note: Currently, this tools only supports generating dataplane sdk, and only can run in powershell/bash.*
 
@@ -23,11 +23,11 @@ rush update
 
 ##### Step 1. Run command:
 ```
-llc-codegen --package-name=<your package name>
+rlc-code-gen --package-name=<your package name>
 ```
 *Note*:
-   - *Please replace with your package name, for example: `llc-codegen --package-name=@azure-rest/purview-account`. If you don't provide it, the tool will ask you to input it interactively.*
-   - *You also can use command `llc-codegen --readme=<the path of swagger/README.md>` to generate codes if `swagger/README.md` exists. Then it will skip Step 2 and go to Step 3 directly.*
+   - *Please replace with your package name, for example: `rlc-code-gen --package-name=@azure-rest/purview-account`. If you don't provide it, the tool will ask you to input it interactively.*
+   - *You also can use command `rlc-code-gen --readme=<the path of swagger/README.md>` to generate codes if `swagger/README.md` exists. Then it will skip Step 2 and go to Step 3 directly.*
 ##### Step 2. Generate swagger/README.md
 If your package is first release or doesn't contain `swagger/readme.md`, the tool will ask you to input some necessary information. If not, please skip this step.
    
@@ -49,9 +49,9 @@ You need to provide following information. You can refer to [README.md](https://
 | package-version | The sdk version you want to generate. |
 | credential-scopes | The credential scopes of your service. |
 
-You also can provide the information when running command `llc-codegen`, such as `llc-codegen --package-name=<your package name> --title=<your title> --description=<your description>`.
+You also can provide the information when running command `rlc-code-gen`, such as `rlc-code-gen --package-name=<your package name> --title=<your title> --description=<your description>`.
 
-##### Step 3. The tool will generate codes and build generated codes automatically. Finally, you can get LLC codes.
+##### Step 3. The tool will generate codes and build generated codes automatically. Finally, you can get RLC codes.
 
    - If you want to write test, please start from sample test from `test` folder.
    - If you want to write sample, please start from `sample.env`, `sample-dev` folder and `samples` folder.

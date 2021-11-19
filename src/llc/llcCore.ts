@@ -13,6 +13,7 @@ import {changeRushJson, modifyOrGenerateCiYaml} from "../codegenGenerationCore/c
 import {getRelativePackagePath} from "./utils";
 import {generateChangelog} from "./generateChangelog";
 import {hackByModifyConfig, ModifyModel} from "./hackByModifyConfig";
+import {generateKarmaConfig} from "./generateKarmaConfig";
 
 const shell = require('shelljs')
 
@@ -34,6 +35,7 @@ export async function generateCodes(packagePath, packageName, sdkRepo) {
         await generateLinterConfig(packagePath);
         await generateLicense(packagePath);
         await generateTest(packagePath);
+        await generateKarmaConfig(packagePath);
         await generateSample(packagePath);
         await modifyOrGenerateCiYaml(sdkRepo, packagePath, packageName);
         await changeRushJson(sdkRepo, packageName, getRelativePackagePath(packagePath), 'client');
