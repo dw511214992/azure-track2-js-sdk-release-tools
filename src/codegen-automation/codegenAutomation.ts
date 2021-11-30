@@ -13,7 +13,7 @@ async function automationGenerate(absoluteReadmeMd: string, tag?: string, use?: 
     } else {
         const gitCommitId = await getLastCommitId(regexResult[1]);
         const relativeReadmeMd = regexResult[2];
-        await generateSdkAutomatically(String(shell.pwd()), absoluteReadmeMd, relativeReadmeMd, gitCommitId, tag, use, useDebugger);
+        await generateSdkAutomatically(String(shell.pwd()), absoluteReadmeMd, relativeReadmeMd, gitCommitId, false, tag, use, useDebugger);
     }
 
 }

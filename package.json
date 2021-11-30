@@ -1,6 +1,6 @@
 {
-  "name": "azure-track2-js-sdk-release-tools",
-  "version": "0.1.32",
+  "name": "dw-azure-track2-js-sdk-release-tools",
+  "version": "0.1.1",
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -14,7 +14,8 @@
   "bin": {
     "track2-js-sdk-changelog-tool": "./dist/changelog-generator/generateChangelogAndBumpVersionCLI.js",
     "track2-codegen-automation": "./dist/codegen-automation/codegenAutomation.js",
-    "track2-codegen-automation-for-pipeline": "./dist/codegen-automation/codegenAutomationForPipeline.js"
+    "track2-codegen-automation-for-pipeline": "./dist/codegen-automation/codegenAutomationForPipeline.js",
+    "track2-codegen-automation-for-sdk-generation": "./dist/codegen-automation/codegenAutomationForSdkGeneration.js"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",

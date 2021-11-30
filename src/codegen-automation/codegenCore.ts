@@ -23,6 +23,18 @@ export interface OutputPackageInfo {
     result: string;
 }
 
+export interface OutputPackageInfoForSdkGeneration {
+    packageName: string;
+    path: string[];
+    changelog: {
+        content: string;
+        hasBreakingChange: boolean;
+    };
+    artifacts: string[];
+    result: string;
+    packageFolder: string;
+}
+
 function changeRushJson(azureSDKForJSRepoRoot: string, packageName: any, relativePackageFolderPath: string) {
     const rushJson = commentJson.parse(fs.readFileSync(path.join(azureSDKForJSRepoRoot, 'rush.json'), { encoding: 'utf-8' }));
     const projects: any[] = rushJson.projects;
@@ -135,7 +147,7 @@ extends:
     }
 }
 
-export async function generateSdkAutomatically(azureSDKForJSRepoRoot: string, absoluteReadmeMd: string, relativeReadmeMd: string, gitCommitId: string, tag?: string, use?: string, useDebugger?: boolean, outputJson?: any, swaggerRepoUrl?: string) {
+export async function generateSdkAutomatically(azureSDKForJSRepoRoot: string, absoluteReadmeMd: string, relativeReadmeMd: string, gitCommitId: string, forSdkGeneration: boolean, tag?: string, use?: string, useDebugger?: boolean, outputJson?: any, swaggerRepoUrl?: string) {
     logger.logGreen(`>>>>>>>>>>>>>>>>>>> Start: "${absoluteReadmeMd}" >>>>>>>>>>>>>>>>>>>>>>>>>`);
 
     let cmd = `autorest --version=3.1.3 --typescript --modelerfour.lenient-model-deduplication --head-as-boolean=true --license-header=MICROSOFT_MIT_NO_VERSION --generate-test --typescript-sdks-folder=${azureSDKForJSRepoRoot} ${absoluteReadmeMd}`;
@@ -167,22 +179,40 @@ export async function generateSdkAutomatically(azureSDKForJSRepoRoot: string, ab
 
         const changedPackageDirectories: Set<string> = await getChangedPackageDirectory();
         for (const changedPackageDirectory of changedPackageDirectories) {
-            const outputPackageInfo: OutputPackageInfo = {
-                "packageName": "",
-                "path": [
-                    'rush.json',
-                    'common/config/rush/pnpm-lock.yaml'
-                ],
-                "readmeMd": [
-                    relativeReadmeMd
-                ],
-                "changelog": {
-                    "content": "",
-                    "hasBreakingChange": false
-                },
-                "artifacts": [],
-                "result": "succeeded"
-            };
+            let outputPackageInfo;
+            if (forSdkGeneration) {
+                outputPackageInfo = {
+                    "packageName": "",
+                    "path": [
+                        'rush.json',
+                        'common/config/rush/pnpm-lock.yaml'
+                    ],
+                    "changelog": {
+                        "content": "",
+                        "hasBreakingChange": false
+                    },
+                    "packageFolder": '',
+                    "artifacts": [],
+                    "result": "succeeded"
+                } as OutputPackageInfoForSdkGeneration;
+            } else {
+                outputPackageInfo = {
+                    "packageName": "",
+                    "path": [
+                        'rush.json',
+                        'common/config/rush/pnpm-lock.yaml'
+                    ],
+                    "readmeMd": [
+                        relativeReadmeMd
+                    ],
+                    "changelog": {
+                        "content": "",
+                        "hasBreakingChange": false
+                    },
+                    "artifacts": [],
+                    "result": "succeeded"
+                } as OutputPackageInfo;
+            }
             try {
                 const packageFolderPath: string = path.join(azureSDKForJSRepoRoot, changedPackageDirectory);
                 logger.logGreen(`Installing dependencies for ${changedPackageDirectory}...`);
@@ -208,7 +238,10 @@ export async function generateSdkAutomatically(azureSDKForJSRepoRoot: string, ab
                             outputPackageInfo.changelog.hasBreakingChange = changelog.hasBreakingChange;
                             outputPackageInfo.changelog.content = changelog.displayChangeLog();
                         }
-                        outputPackageInfo.path.push(path.dirname(changedPackageDirectory));
+                        outputPackageInfo.packageFolder = changedPackageDirectory;
+
+                        outputPackageInfo.path.push(changedPackageDirectory);
+                        outputPackageInfo.path.push(path.join(path.dirname(changedPackageDirectory), 'ci.yml'));
                         for (const file of fs.readdirSync(packageFolderPath)) {
                             if (file.startsWith('azure-arm') && file.endsWith('.tgz')) {
                                 outputPackageInfo.artifacts.push(path.join(changedPackageDirectory, file));
@@ -219,7 +252,7 @@ export async function generateSdkAutomatically(azureSDKForJSRepoRoot: string, ab
                         commit: gitCommitId,
                         readme: relativeReadmeMd,
                         autorest_command: cmd,
-                        repository_url: swaggerRepoUrl? `${swaggerRepoUrl}.git` : 'https://github.com/Azure/azure-rest-api-specs.git'
+                        repository_url: swaggerRepoUrl? `` : 'https://github.com/Azure/azure-rest-api-specs.git'
                     };
                     if (tag) {
                         metaInfo['tag'] = tag;
