@@ -1,6 +1,6 @@
 {
   "name": "dw-azure-track2-js-sdk-release-tools",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -22,7 +22,7 @@
   "dependencies": {
     "@azure-tools/openapi-tools-common": "^1.2.2",
     "@ts-common/azure-js-dev-tools": "^22.4.22",
-    "colors": "^1.4.0",
+    "colors": "1.4.0",
     "command-line-args": "^5.1.1",
     "comment-json": "^4.1.0",
     "lodash": "^4.17.21",
